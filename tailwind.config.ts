@@ -106,7 +106,7 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         shimmer: "shimmer 2s infinite",
       },
-    }
+    },
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;

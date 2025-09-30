@@ -52,7 +52,10 @@ interface AuthContextValue {
   signOut: () => Promise<void>;
   createUserAccount: (payload: CreateUserPayload) => Promise<void>;
   resetCashierPin: (uid: string, pin: string) => Promise<void>;
-  changeOwnerPassword: (currentPassword: string, newPassword: string) => Promise<void>;
+  changeOwnerPassword: (
+    currentPassword: string,
+    newPassword: string,
+  ) => Promise<void>;
 }
 
 const DEFAULT_OWNER_EMAIL = "owner@marcoaesthetics.png";
@@ -68,9 +71,14 @@ const hashPin = async (pin: string): Promise<string> => {
     .join("");
 };
 
-const mapFirestoreProfile = (docData: DocumentData, uid: string): UserProfile => {
-  const createdAtValue = docData.createdAt?.toDate?.() ?? docData.createdAt ?? undefined;
-  const lastShiftClosedAtValue = docData.lastShiftClosedAt?.toDate?.() ?? docData.lastShiftClosedAt ?? null;
+const mapFirestoreProfile = (
+  docData: DocumentData,
+  uid: string,
+): UserProfile => {
+  const createdAtValue =
+    docData.createdAt?.toDate?.() ?? docData.createdAt ?? undefined;
+  const lastShiftClosedAtValue =
+    docData.lastShiftClosedAt?.toDate?.() ?? docData.lastShiftClosedAt ?? null;
 
   return {
     uid,
@@ -97,7 +105,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     functions = firebaseFunctions();
   } catch (err) {
     // Firebase not configured in environment; fail gracefully and allow UI to render with limited features
-    console.warn("[firebase] initialization failed — running in offline/mock mode", err);
+    console.warn(
+      "[firebase] initialization failed — running in offline/mock mode",
+      err,
+    );
     initError = err;
   }
 
@@ -151,7 +162,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         async (snapshot) => {
           if (!snapshot.exists()) {
             const inferredRole: UserRole =
-              currentUser.email?.toLowerCase() === DEFAULT_OWNER_EMAIL ? "owner" : "cashier";
+              currentUser.email?.toLowerCase() === DEFAULT_OWNER_EMAIL
+                ? "owner"
+                : "cashier";
 
             await setDoc(
               userDocRef,
@@ -214,7 +227,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setRole("owner");
         return;
       }
-      throw new Error("Firebase not configured — demo mode accepts the preseeded owner credentials only");
+      throw new Error(
+        "Firebase not configured — demo mode accepts the preseeded owner credentials only",
+      );
     }
 
     await signInWithEmailAndPassword(auth!, email.trim(), password);
@@ -230,11 +245,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await firebaseSignOut(auth!);
   };
 
-  const createUserAccount = async ({ email, password, role: newRole, status = "active", displayName }: CreateUserPayload) => {
-    if (!initialized || !functions || !firestore) throw new Error("Firebase not configured — cannot create users");
+  const createUserAccount = async ({
+    email,
+    password,
+    role: newRole,
+    status = "active",
+    displayName,
+  }: CreateUserPayload) => {
+    if (!initialized || !functions || !firestore)
+      throw new Error("Firebase not configured — cannot create users");
     const callable = httpsCallable(functions, "createPosUser");
     try {
-      const { data } = await callable({ email, password, role: newRole, status, displayName });
+      const { data } = await callable({
+        email,
+        password,
+        role: newRole,
+        status,
+        displayName,
+      });
       const { uid } = data as { uid: string };
       await setDoc(
         doc(firestore, "users", uid),
@@ -255,7 +283,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const resetCashierPin = async (uid: string, pin: string) => {
-    if (!initialized || !firestore) throw new Error("Firebase not configured — cannot reset PIN");
+    if (!initialized || !firestore)
+      throw new Error("Firebase not configured — cannot reset PIN");
     const hashedPin = await hashPin(pin);
     await updateDoc(doc(firestore, "users", uid), {
       posPin: hashedPin,
@@ -263,12 +292,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const changeOwnerPassword = async (currentPassword: string, newPassword: string) => {
+  const changeOwnerPassword = async (
+    currentPassword: string,
+    newPassword: string,
+  ) => {
     if (!user?.email) {
       throw new Error("No authenticated owner account found");
     }
 
-    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    const credential = EmailAuthProvider.credential(
+      user.email,
+      currentPassword,
+    );
     await reauthenticateWithCredential(user, credential);
     await updatePassword(user, newPassword);
     if (profile?.forcePasswordReset) {

@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus, KeyRound, UserCheck } from "lucide-react";
@@ -14,9 +21,27 @@ interface UserRow {
 }
 
 const seedUsers: UserRow[] = [
-  { uid: "1", email: "owner@marcoaesthetics.png", role: "owner", status: "active", createdAt: "Jan 01, 2025" },
-  { uid: "2", email: "marian@marco-pos.app", role: "cashier", status: "active", createdAt: "Jan 03, 2025" },
-  { uid: "3", email: "jesse@marco-pos.app", role: "cashier", status: "invited", createdAt: "Jan 08, 2025" },
+  {
+    uid: "1",
+    email: "owner@marcoaesthetics.png",
+    role: "owner",
+    status: "active",
+    createdAt: "Jan 01, 2025",
+  },
+  {
+    uid: "2",
+    email: "marian@marco-pos.app",
+    role: "cashier",
+    status: "active",
+    createdAt: "Jan 03, 2025",
+  },
+  {
+    uid: "3",
+    email: "jesse@marco-pos.app",
+    role: "cashier",
+    status: "invited",
+    createdAt: "Jan 08, 2025",
+  },
 ];
 
 const UsersPage = () => {
@@ -28,10 +53,20 @@ const UsersPage = () => {
     setIsInviting(true);
     const tempEmail = `cashier${Math.random().toString(16).slice(2, 6)}@marco-pos.app`;
     try {
-      await createUserAccount({ email: tempEmail, password: "CashierTemp123!", role: "cashier" });
+      await createUserAccount({
+        email: tempEmail,
+        password: "CashierTemp123!",
+        role: "cashier",
+      });
       setUsers((prev) => [
         ...prev,
-        { uid: crypto.randomUUID(), email: tempEmail, role: "cashier", status: "invited", createdAt: new Date().toLocaleDateString() },
+        {
+          uid: crypto.randomUUID(),
+          email: tempEmail,
+          role: "cashier",
+          status: "invited",
+          createdAt: new Date().toLocaleDateString(),
+        },
       ]);
     } catch (error) {
       console.error("Failed to create cashier", error);
@@ -50,14 +85,23 @@ const UsersPage = () => {
     <div className="space-y-6">
       <section className="glass-panel flex flex-col gap-4 rounded-3xl bg-card/90 p-6 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h2 className="text-2xl font-display text-foreground">Team control</h2>
+          <h2 className="text-2xl font-display text-foreground">
+            Team control
+          </h2>
           <p className="text-sm text-muted-foreground">
-            Manage cashier access, reset pins instantly, and keep the owner credentials secure.
+            Manage cashier access, reset pins instantly, and keep the owner
+            credentials secure.
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button type="button" className="btn-secondary" onClick={handleCreateUser} disabled={isInviting}>
-            <Plus className="mr-2 h-4 w-4" /> {isInviting ? "Creating..." : "Invite cashier"}
+          <Button
+            type="button"
+            className="btn-secondary"
+            onClick={handleCreateUser}
+            disabled={isInviting}
+          >
+            <Plus className="mr-2 h-4 w-4" />{" "}
+            {isInviting ? "Creating..." : "Invite cashier"}
           </Button>
           <Button type="button" className="btn-primary">
             <UserCheck className="mr-2 h-4 w-4" /> Audit log
@@ -89,18 +133,29 @@ const UsersPage = () => {
                   <TableCell className="font-medium">{user.email}</TableCell>
                   <TableCell className="capitalize">{user.role}</TableCell>
                   <TableCell>
-                    <Badge variant={user.status === "active" ? "default" : "secondary"} className="rounded-full px-3 py-1 text-xs">
+                    <Badge
+                      variant={
+                        user.status === "active" ? "default" : "secondary"
+                      }
+                      className="rounded-full px-3 py-1 text-xs"
+                    >
                       {user.status}
                     </Badge>
                   </TableCell>
                   <TableCell>{user.createdAt}</TableCell>
                   <TableCell>
                     {user.role === "cashier" ? (
-                      <Button variant="ghost" size="sm" onClick={() => handleResetPin(user.uid)}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleResetPin(user.uid)}
+                      >
                         <KeyRound className="mr-2 h-4 w-4" /> Reset PIN
                       </Button>
                     ) : (
-                      <span className="text-xs text-muted-foreground">Owner secured</span>
+                      <span className="text-xs text-muted-foreground">
+                        Owner secured
+                      </span>
                     )}
                   </TableCell>
                 </TableRow>

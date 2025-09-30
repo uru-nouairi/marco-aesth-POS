@@ -14,9 +14,12 @@ const SettingsPage = () => {
   return (
     <div className="space-y-8">
       <section className="glass-panel rounded-3xl bg-card/90 p-6">
-        <h2 className="text-2xl font-display text-foreground">System preferences</h2>
+        <h2 className="text-2xl font-display text-foreground">
+          System preferences
+        </h2>
         <p className="text-sm text-muted-foreground">
-          Fine tune mobile POS sync, WhatsApp messaging, and automated Firestore backups.
+          Fine tune mobile POS sync, WhatsApp messaging, and automated Firestore
+          backups.
         </p>
       </section>
 
@@ -24,14 +27,22 @@ const SettingsPage = () => {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-display">Offline-first PWA</h3>
-            <p className="text-sm text-muted-foreground">Installable app with IndexedDB storage for stalls without connectivity.</p>
+            <p className="text-sm text-muted-foreground">
+              Installable app with IndexedDB storage for stalls without
+              connectivity.
+            </p>
           </div>
-          <Switch checked={pwaEnabled} onCheckedChange={setPwaEnabled} aria-label="Toggle PWA mode" />
+          <Switch
+            checked={pwaEnabled}
+            onCheckedChange={setPwaEnabled}
+            aria-label="Toggle PWA mode"
+          />
         </div>
         <div className="rounded-2xl border border-border/60 bg-card/90 p-4 text-sm text-muted-foreground">
           <p className="font-semibold text-foreground">Status</p>
           <p className="mt-1 flex items-center gap-2 text-xs">
-            <Smartphone className="h-4 w-4 text-primary" /> Devices installed: 4 • Last sync 12 mins ago
+            <Smartphone className="h-4 w-4 text-primary" /> Devices installed: 4
+            • Last sync 12 mins ago
           </p>
         </div>
       </section>
@@ -39,16 +50,27 @@ const SettingsPage = () => {
       <section className="surface-muted space-y-6 p-6">
         <div className="space-y-2">
           <h3 className="text-lg font-display">WhatsApp automation</h3>
-          <p className="text-sm text-muted-foreground">Send receipts, daily summaries, and expired loyalty alerts.</p>
+          <p className="text-sm text-muted-foreground">
+            Send receipts, daily summaries, and expired loyalty alerts.
+          </p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="whatsapp-number">Primary WhatsApp number</Label>
-            <Input id="whatsapp-number" value={whatsappNumber} onChange={(event) => setWhatsappNumber(event.target.value)} />
+            <Input
+              id="whatsapp-number"
+              value={whatsappNumber}
+              onChange={(event) => setWhatsappNumber(event.target.value)}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="backup-email">Backup email for transcripts</Label>
-            <Input id="backup-email" type="email" value={backupEmail} onChange={(event) => setBackupEmail(event.target.value)} />
+            <Input
+              id="backup-email"
+              type="email"
+              value={backupEmail}
+              onChange={(event) => setBackupEmail(event.target.value)}
+            />
           </div>
         </div>
         <Button type="button" className="btn-secondary w-fit">
@@ -59,7 +81,9 @@ const SettingsPage = () => {
       <section className="surface-muted space-y-6 p-6">
         <div className="space-y-2">
           <h3 className="text-lg font-display">Cloud backups</h3>
-          <p className="text-sm text-muted-foreground">Automated Firestore export emailed weekly to the owner.</p>
+          <p className="text-sm text-muted-foreground">
+            Automated Firestore export emailed weekly to the owner.
+          </p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">

@@ -43,7 +43,9 @@ const firebaseConfig = {
 };
 
 function validateConfig(): void {
-  const missing = requiredEnvKeys.filter((key) => !firebaseConfig[key as keyof typeof firebaseConfig]);
+  const missing = requiredEnvKeys.filter(
+    (key) => !firebaseConfig[key as keyof typeof firebaseConfig],
+  );
   if (missing.length > 0) {
     console.warn(
       `[firebase] Missing configuration values: ${missing.join(", ")}. Add them to your Vite environment file to connect Firebase.`,
@@ -69,7 +71,10 @@ export const getFirebase = (): FirebaseResources => {
       popupRedirectResolver: undefined,
     });
   } catch (err) {
-    console.warn("[firebase] initializeAuth failed — auth unavailable in this environment", err);
+    console.warn(
+      "[firebase] initializeAuth failed — auth unavailable in this environment",
+      err,
+    );
   }
 
   let firestore: Firestore | null = null;
@@ -81,7 +86,10 @@ export const getFirebase = (): FirebaseResources => {
       }),
     });
   } catch (err) {
-    console.warn("[firebase] initializeFirestore failed — firestore unavailable in this environment", err);
+    console.warn(
+      "[firebase] initializeFirestore failed — firestore unavailable in this environment",
+      err,
+    );
   }
 
   let storage: FirebaseStorage | null = null;
@@ -93,7 +101,8 @@ export const getFirebase = (): FirebaseResources => {
 
   let functions: Functions | null = null;
   try {
-    const functionsRegion = import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION ?? "australia-southeast1";
+    const functionsRegion =
+      import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION ?? "australia-southeast1";
     functions = getFunctions(app, functionsRegion);
   } catch (err) {
     console.warn("[firebase] getFunctions failed — functions unavailable", err);
@@ -116,12 +125,14 @@ export const firebaseFirestore = (): Firestore => {
 };
 export const firebaseStorage = (): FirebaseStorage => {
   const s = getFirebase().storage;
-  if (!s) throw new Error("Firebase Storage is not available in this environment");
+  if (!s)
+    throw new Error("Firebase Storage is not available in this environment");
   return s;
 };
 export const firebaseFunctions = (): Functions => {
   const fn = getFirebase().functions;
-  if (!fn) throw new Error("Firebase Functions is not available in this environment");
+  if (!fn)
+    throw new Error("Firebase Functions is not available in this environment");
   return fn;
 };
 

@@ -26,10 +26,14 @@ const LoginPage = () => {
     try {
       setIsSubmitting(true);
       await signIn(email, password);
-      const redirectPath = (location.state as { from?: Location })?.from?.pathname ?? "/";
+      const redirectPath =
+        (location.state as { from?: Location })?.from?.pathname ?? "/";
       navigate(redirectPath, { replace: true });
     } catch (err: any) {
-      const message = err?.message ?? String(err) ?? "Unable to authenticate. Check your credentials and try again.";
+      const message =
+        err?.message ??
+        String(err) ??
+        "Unable to authenticate. Check your credentials and try again.";
       setError(message);
       console.error("Login failed", err);
     } finally {
@@ -57,18 +61,28 @@ const LoginPage = () => {
                 <p className="text-sm uppercase tracking-[0.4em] text-foreground/60">
                   Marco Aesthetics
                 </p>
-                <h1 className="text-3xl font-display text-gradient-gold">POS Command Centre</h1>
+                <h1 className="text-3xl font-display text-gradient-gold">
+                  POS Command Centre
+                </h1>
               </div>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              Seamlessly manage sales, inventory, and loyalty from any pop-up stall. Secure, real-time,
-              and crafted for on-the-go commerce in Papua New Guinea.
+              Seamlessly manage sales, inventory, and loyalty from any pop-up
+              stall. Secure, real-time, and crafted for on-the-go commerce in
+              Papua New Guinea.
             </p>
           </div>
 
           <div className="grid gap-6">
-            {["Offline-first sales capture", "Role-based access with owner oversight", "Automated WhatsApp summaries"].map((item) => (
-              <div key={item} className="metric-tile flex-row items-center gap-4">
+            {[
+              "Offline-first sales capture",
+              "Role-based access with owner oversight",
+              "Automated WhatsApp summaries",
+            ].map((item) => (
+              <div
+                key={item}
+                className="metric-tile flex-row items-center gap-4"
+              >
                 <Sparkles className="h-5 w-5 text-primary" />
                 <p className="text-sm font-medium text-foreground/80">{item}</p>
               </div>
@@ -87,24 +101,37 @@ const LoginPage = () => {
           <div className="space-y-4 text-center">
             {!initialized ? (
               <div className="rounded-2xl border border-border/60 bg-secondary/10 p-3 text-sm text-muted-foreground">
-                <strong className="block text-foreground/90">Demo mode active</strong>
-                <p className="mt-1">Firebase is not configured. Use the demo owner credentials to explore the app:</p>
-                <p className="mt-1 text-xs">owner@marcoaesthetics.png / PWmarco123!</p>
+                <strong className="block text-foreground/90">
+                  Demo mode active
+                </strong>
+                <p className="mt-1">
+                  Firebase is not configured. Use the demo owner credentials to
+                  explore the app:
+                </p>
+                <p className="mt-1 text-xs">
+                  owner@marcoaesthetics.png / PWmarco123!
+                </p>
               </div>
             ) : null}
 
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/15 text-primary">
               <ShieldCheck className="h-8 w-8" strokeWidth={2.4} />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-display text-foreground">Sign in to continue</h2>
+            <h2 className="text-2xl sm:text-3xl font-display text-foreground">
+              Sign in to continue
+            </h2>
             <p className="text-sm text-muted-foreground">
-              Use the credentials shared with you. Cashier accounts only access the POS checkout flow.
+              Use the credentials shared with you. Cashier accounts only access
+              the POS checkout flow.
             </p>
           </div>
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-foreground/80">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-foreground/80"
+              >
                 Email address
               </label>
               <input
@@ -155,9 +182,15 @@ const LoginPage = () => {
           </form>
 
           <div className="mt-8 space-y-2 text-center text-xs text-muted-foreground">
-            <p>Need a new cashier account? Ask the owner to invite you from the Users panel.</p>
             <p>
-              Prefer a guided setup? <Link to="https://wa.me/67500000000" className="underline">Chat with Support on WhatsApp</Link>
+              Need a new cashier account? Ask the owner to invite you from the
+              Users panel.
+            </p>
+            <p>
+              Prefer a guided setup?{" "}
+              <Link to="https://wa.me/67500000000" className="underline">
+                Chat with Support on WhatsApp
+              </Link>
             </p>
           </div>
         </motion.div>

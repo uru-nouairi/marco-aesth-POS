@@ -1,7 +1,19 @@
 import { useMemo, type ReactNode } from "react";
-import { Download, CalendarRange, PieChart, BarChart3, Clock } from "lucide-react";
+import {
+  Download,
+  CalendarRange,
+  PieChart,
+  BarChart3,
+  Clock,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const dailySummary = {
@@ -31,9 +43,12 @@ const ReportsPage = () => {
     <div className="space-y-8">
       <section className="glass-panel flex flex-col gap-4 rounded-3xl bg-card/90 p-6 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h2 className="text-2xl font-display text-foreground">Insights & reporting</h2>
+          <h2 className="text-2xl font-display text-foreground">
+            Insights & reporting
+          </h2>
           <p className="text-sm text-muted-foreground">
-            Track sales velocity, bundle performance, and send automated WhatsApp summaries to the owner nightly.
+            Track sales velocity, bundle performance, and send automated
+            WhatsApp summaries to the owner nightly.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
@@ -48,7 +63,7 @@ const ReportsPage = () => {
 
       <section className="grid gap-6 lg:grid-cols-3">
         <MetricCard
-          title="Today&apos;s sales"
+          title="Today's sales"
           value={`K${dailySummary.sales}`}
           description={`${dailySummary.transactions} transactions • Avg basket K${dailySummary.avgBasket}`}
           icon={<BarChart3 className="h-5 w-5" />}
@@ -71,7 +86,9 @@ const ReportsPage = () => {
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h3 className="text-lg font-display">Monthly movement</h3>
-            <p className="text-sm text-muted-foreground">Revenue and profit margin trends across the last five months.</p>
+            <p className="text-sm text-muted-foreground">
+              Revenue and profit margin trends across the last five months.
+            </p>
           </div>
           <Button type="button" className="btn-secondary">
             Share to WhatsApp
@@ -79,10 +96,17 @@ const ReportsPage = () => {
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {monthlyPerformance.map((entry) => (
-            <div key={entry.month} className="glass-panel flex flex-col gap-2 rounded-2xl p-4 text-sm">
+            <div
+              key={entry.month}
+              className="glass-panel flex flex-col gap-2 rounded-2xl p-4 text-sm"
+            >
               <p className="text-muted-foreground">{entry.month}</p>
-              <p className="text-lg font-semibold text-foreground">K{entry.revenue.toLocaleString()}</p>
-              <span className="text-xs text-primary">Margin {Math.round(entry.profit * 100)}%</span>
+              <p className="text-lg font-semibold text-foreground">
+                K{entry.revenue.toLocaleString()}
+              </p>
+              <span className="text-xs text-primary">
+                Margin {Math.round(entry.profit * 100)}%
+              </span>
             </div>
           ))}
         </div>
@@ -92,11 +116,15 @@ const ReportsPage = () => {
         <Card className="surface-muted border-0">
           <CardHeader>
             <CardTitle>Daily WhatsApp summary</CardTitle>
-            <CardDescription>Delivered nightly at 9:30pm to owner and finance lead.</CardDescription>
+            <CardDescription>
+              Delivered nightly at 9:30pm to owner and finance lead.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-sm text-muted-foreground">
             <div className="rounded-2xl border border-border/60 bg-card/90 p-4">
-              <p className="text-sm font-semibold text-foreground">Highlights included</p>
+              <p className="text-sm font-semibold text-foreground">
+                Highlights included
+              </p>
               <ul className="mt-2 list-disc space-y-1 pl-5">
                 <li>Total sales and cash on hand</li>
                 <li>Busiest hour and best selling bundle</li>
@@ -104,8 +132,13 @@ const ReportsPage = () => {
               </ul>
             </div>
             <div className="rounded-2xl border border-border/60 bg-card/90 p-4">
-              <p className="text-sm font-semibold text-foreground">Escalations</p>
-              <p>Flag variances over K50 or system issues to Connie via WhatsApp voice note.</p>
+              <p className="text-sm font-semibold text-foreground">
+                Escalations
+              </p>
+              <p>
+                Flag variances over K50 or system issues to Connie via WhatsApp
+                voice note.
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -113,20 +146,37 @@ const ReportsPage = () => {
         <Card className="surface-muted border-0">
           <CardHeader>
             <CardTitle>Monthly PDF pack</CardTitle>
-            <CardDescription>Emailed on the first day of each month with deep dives.</CardDescription>
+            <CardDescription>
+              Emailed on the first day of each month with deep dives.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted-foreground">
             <div className="rounded-2xl border border-border/60 bg-card/90 p-4">
-              <p className="text-sm font-semibold text-foreground">Inclusions</p>
-              <p>Revenue by location, loyalty redemption, bundle performance, and POS device uptime.</p>
+              <p className="text-sm font-semibold text-foreground">
+                Inclusions
+              </p>
+              <p>
+                Revenue by location, loyalty redemption, bundle performance, and
+                POS device uptime.
+              </p>
             </div>
             <div className="rounded-2xl border border-border/60 bg-card/90 p-4">
-              <p className="text-sm font-semibold text-foreground">Recipients</p>
-              <p>Owner, accountant, and manufacturing partner for demand planning.</p>
+              <p className="text-sm font-semibold text-foreground">
+                Recipients
+              </p>
+              <p>
+                Owner, accountant, and manufacturing partner for demand
+                planning.
+              </p>
             </div>
             <div className="rounded-2xl border border-border/60 bg-card/90 p-4">
-              <p className="text-sm font-semibold text-foreground">Backup compliance</p>
-              <p>Weekly Firestore export scheduled every Sunday with off-site email archive.</p>
+              <p className="text-sm font-semibold text-foreground">
+                Backup compliance
+              </p>
+              <p>
+                Weekly Firestore export scheduled every Sunday with off-site
+                email archive.
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -135,12 +185,26 @@ const ReportsPage = () => {
   );
 };
 
-const MetricCard = ({ title, value, description, icon }: { title: string; value: string; description: string; icon: ReactNode }) => {
+const MetricCard = ({
+  title,
+  value,
+  description,
+  icon,
+}: {
+  title: string;
+  value: string;
+  description: string;
+  icon: ReactNode;
+}) => {
   return (
     <Card className="glass-panel border-0">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        <span className="rounded-full bg-primary/15 p-2 text-primary">{icon}</span>
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {title}
+        </CardTitle>
+        <span className="rounded-full bg-primary/15 p-2 text-primary">
+          {icon}
+        </span>
       </CardHeader>
       <CardContent>
         <p className="text-2xl font-display text-foreground">{value}</p>

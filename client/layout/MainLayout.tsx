@@ -1,4 +1,11 @@
-import { Fragment, type ComponentType, type SVGProps, useEffect, useMemo, useState } from "react";
+import {
+  Fragment,
+  type ComponentType,
+  type SVGProps,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -27,7 +34,13 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Overview", path: "/", icon: LayoutDashboard, roles: ["owner"] },
-  { label: "POS", path: "/pos", icon: ShoppingBag, roles: ["owner", "cashier"], badge: "Live" },
+  {
+    label: "POS",
+    path: "/pos",
+    icon: ShoppingBag,
+    roles: ["owner", "cashier"],
+    badge: "Live",
+  },
   { label: "Inventory", path: "/inventory", icon: Boxes, roles: ["owner"] },
   { label: "Reports", path: "/reports", icon: BarChart4, roles: ["owner"] },
   { label: "Users", path: "/users", icon: Users2, roles: ["owner"] },
@@ -40,7 +53,11 @@ const MainLayout = () => {
   const { signOut, role, profile, requiresPasswordChange } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const items = useMemo(() => NAV_ITEMS.filter((item) => (role ? item.roles.includes(role) : false)), [role]);
+  const items = useMemo(
+    () =>
+      NAV_ITEMS.filter((item) => (role ? item.roles.includes(role) : false)),
+    [role],
+  );
 
   useEffect(() => {
     if (role === "cashier" && location.pathname === "/") {
@@ -104,8 +121,12 @@ const MainLayout = () => {
         <aside className="hidden w-64 shrink-0 lg:block">
           <div className="sticky top-8 space-y-8">
             <div className="glass-panel p-6 text-center">
-              <p className="text-xs uppercase tracking-[0.4em] text-foreground/50">Marco POS</p>
-              <h1 className="mt-2 text-xl font-display text-gradient-gold">Aesthetics Control</h1>
+              <p className="text-xs uppercase tracking-[0.4em] text-foreground/50">
+                Marco POS
+              </p>
+              <h1 className="mt-2 text-xl font-display text-gradient-gold">
+                Aesthetics Control
+              </h1>
               <p className="mt-4 text-xs text-muted-foreground">
                 Empowered by owner {profile?.displayName ?? "Connie"}
               </p>
@@ -123,8 +144,12 @@ const MainLayout = () => {
         <main className="flex-grow space-y-6 pb-8">
           <header className="glass-panel flex flex-col gap-4 rounded-3xl p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div>
-              <p className="text-sm uppercase tracking-[0.3em] text-foreground/50">Today&apos;s Pulse</p>
-              <h2 className="text-2xl font-display text-foreground/90">{getHeaderTitle(location.pathname)}</h2>
+              <p className="text-sm uppercase tracking-[0.3em] text-foreground/50">
+                Today&apos;s Pulse
+              </p>
+              <h2 className="text-2xl font-display text-foreground/90">
+                {getHeaderTitle(location.pathname)}
+              </h2>
             </div>
             <div className="flex items-center gap-3">
               <button
@@ -144,8 +169,12 @@ const MainLayout = () => {
               <div className="flex items-center gap-3 rounded-3xl bg-card/80 px-3 py-2 shadow-brand-soft">
                 <div className="h-8 w-8 rounded-full bg-primary/15" />
                 <div className="hidden text-left sm:block">
-                  <p className="text-sm font-medium text-foreground/80">{profile?.displayName ?? "Owner"}</p>
-                  <p className="text-xs text-muted-foreground">{role === "owner" ? "Owner" : "Cashier"}</p>
+                  <p className="text-sm font-medium text-foreground/80">
+                    {profile?.displayName ?? "Owner"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {role === "owner" ? "Owner" : "Cashier"}
+                  </p>
                 </div>
                 <button
                   type="button"
@@ -166,7 +195,8 @@ const MainLayout = () => {
                 <div>
                   <p className="font-semibold">Update required</p>
                   <p className="text-xs text-muted-foreground">
-                    Please change the default owner password to continue protecting transaction data.
+                    Please change the default owner password to continue
+                    protecting transaction data.
                   </p>
                 </div>
               </div>
@@ -191,7 +221,9 @@ const MainLayout = () => {
         <div className="flex items-center justify-between">
           {items.map((item) => {
             const Icon = item.icon;
-            const active = location.pathname === item.path || (item.path === "/" && location.pathname === "/");
+            const active =
+              location.pathname === item.path ||
+              (item.path === "/" && location.pathname === "/");
             return (
               <button
                 key={item.path}
@@ -231,13 +263,18 @@ const SidebarContent = ({
       <div className="glass-panel space-y-3 p-6">
         {items.map((item) => {
           const Icon = item.icon;
-          const active = locationPathname === item.path || (item.path === "/" && locationPathname === "/");
+          const active =
+            locationPathname === item.path ||
+            (item.path === "/" && locationPathname === "/");
           return (
             <button
               type="button"
               key={item.path}
               onClick={() => onNavigate(item.path)}
-              className={cn("nav-pill w-full", active ? "nav-pill-active" : "nav-pill-inactive")}
+              className={cn(
+                "nav-pill w-full",
+                active ? "nav-pill-active" : "nav-pill-inactive",
+              )}
             >
               <div className="flex items-center gap-3">
                 <Icon className="h-5 w-5" />

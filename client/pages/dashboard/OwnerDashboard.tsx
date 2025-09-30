@@ -1,5 +1,15 @@
 import { useMemo, type ReactNode } from "react";
-import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, Tooltip, BarChart, Bar, YAxis } from "recharts";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  CartesianGrid,
+  XAxis,
+  Tooltip,
+  BarChart,
+  Bar,
+  YAxis,
+} from "recharts";
 import { BadgeCheck, TrendingUp, Flame, MapPin, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -34,14 +44,39 @@ const locationPerformance = [
 ];
 
 const shiftSummary = [
-  { cashier: "Marian", till: "POS-2", sales: "K820", closeTime: "9:35pm", variance: "Balanced" },
-  { cashier: "Jesse", till: "POS-1", sales: "K645", closeTime: "8:50pm", variance: "Balanced" },
+  {
+    cashier: "Marian",
+    till: "POS-2",
+    sales: "K820",
+    closeTime: "9:35pm",
+    variance: "Balanced",
+  },
+  {
+    cashier: "Jesse",
+    till: "POS-1",
+    sales: "K645",
+    closeTime: "8:50pm",
+    variance: "Balanced",
+  },
 ];
 
 const OwnerDashboard = () => {
-  const totalWeeklySales = useMemo(() => dailySales.reduce((sum, item) => sum + item.total, 0), []);
-  const avgMargin = useMemo(() => Math.round(topSkus.reduce((sum, sku) => sum + sku.margin, 0) / topSkus.length * 100), []);
-  const weeklyTransactions = useMemo(() => dailySales.reduce((sum, item) => sum + item.transactions, 0), []);
+  const totalWeeklySales = useMemo(
+    () => dailySales.reduce((sum, item) => sum + item.total, 0),
+    [],
+  );
+  const avgMargin = useMemo(
+    () =>
+      Math.round(
+        (topSkus.reduce((sum, sku) => sum + sku.margin, 0) / topSkus.length) *
+          100,
+      ),
+    [],
+  );
+  const weeklyTransactions = useMemo(
+    () => dailySales.reduce((sum, item) => sum + item.transactions, 0),
+    [],
+  );
 
   return (
     <div className="space-y-8">
@@ -78,7 +113,9 @@ const OwnerDashboard = () => {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h3 className="text-lg font-display">Daily sales velocity</h3>
-              <p className="text-sm text-muted-foreground">Syncs instantly when devices come back online.</p>
+              <p className="text-sm text-muted-foreground">
+                Syncs instantly when devices come back online.
+              </p>
             </div>
             <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wide">
               Offline-ready
@@ -94,10 +131,24 @@ const OwnerDashboard = () => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#EADBC5" />
-                <XAxis dataKey="day" stroke="#7D603E" tickLine={false} axisLine={false} />
+                <XAxis
+                  dataKey="day"
+                  stroke="#7D603E"
+                  tickLine={false}
+                  axisLine={false}
+                />
                 <YAxis hide domain={[0, 1400]} />
-                <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#E1CFAE", strokeWidth: 2 }} />
-                <Area type="monotone" dataKey="total" stroke="#7D603E" strokeWidth={3} fill="url(#colorSales)" />
+                <Tooltip
+                  content={<CustomTooltip />}
+                  cursor={{ stroke: "#E1CFAE", strokeWidth: 2 }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="total"
+                  stroke="#7D603E"
+                  strokeWidth={3}
+                  fill="url(#colorSales)"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -106,9 +157,13 @@ const OwnerDashboard = () => {
           <div className="flex items-start justify-between gap-4">
             <div>
               <h3 className="text-lg font-display">Busiest hours</h3>
-              <p className="text-sm text-muted-foreground">Plan staffing and bundle promotions.</p>
+              <p className="text-sm text-muted-foreground">
+                Plan staffing and bundle promotions.
+              </p>
             </div>
-            <span className="rounded-full bg-accent/60 px-3 py-1 text-xs font-semibold text-accent-foreground">Live</span>
+            <span className="rounded-full bg-accent/60 px-3 py-1 text-xs font-semibold text-accent-foreground">
+              Live
+            </span>
           </div>
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
@@ -120,10 +175,19 @@ const OwnerDashboard = () => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid vertical={false} stroke="#EADBC5" />
-                <XAxis dataKey="hour" stroke="#7D603E" tickLine={false} axisLine={false} />
+                <XAxis
+                  dataKey="hour"
+                  stroke="#7D603E"
+                  tickLine={false}
+                  axisLine={false}
+                />
                 <YAxis hide />
                 <Tooltip cursor={{ fill: "rgba(203,164,90,0.1)" }} />
-                <Bar dataKey="tickets" fill="url(#barGradient)" radius={[12, 12, 12, 12]} />
+                <Bar
+                  dataKey="tickets"
+                  fill="url(#barGradient)"
+                  radius={[12, 12, 12, 12]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -134,16 +198,27 @@ const OwnerDashboard = () => {
         <div className="surface-muted space-y-4 p-6">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-display">Top performing SKUs</h3>
-            <span className="text-xs uppercase tracking-[0.4em] text-muted-foreground">Weekly</span>
+            <span className="text-xs uppercase tracking-[0.4em] text-muted-foreground">
+              Weekly
+            </span>
           </div>
           <div className="space-y-4">
             {topSkus.map((sku) => (
-              <div key={sku.name} className="flex items-center justify-between gap-4 rounded-2xl border border-border/40 bg-card/90 p-4 shadow-brand-soft">
+              <div
+                key={sku.name}
+                className="flex items-center justify-between gap-4 rounded-2xl border border-border/40 bg-card/90 p-4 shadow-brand-soft"
+              >
                 <div>
-                  <p className="text-sm font-semibold text-foreground">{sku.name}</p>
-                  <p className="text-xs text-muted-foreground">{sku.sold} sold</p>
+                  <p className="text-sm font-semibold text-foreground">
+                    {sku.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {sku.sold} sold
+                  </p>
                 </div>
-                <span className="text-sm font-semibold text-foreground">{Math.round(sku.margin * 100)}% margin</span>
+                <span className="text-sm font-semibold text-foreground">
+                  {Math.round(sku.margin * 100)}% margin
+                </span>
               </div>
             ))}
           </div>
@@ -152,19 +227,30 @@ const OwnerDashboard = () => {
         <div className="surface-muted space-y-4 p-6">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-display">Market performance</h3>
-            <span className="text-xs uppercase tracking-[0.4em] text-muted-foreground">Locations</span>
+            <span className="text-xs uppercase tracking-[0.4em] text-muted-foreground">
+              Locations
+            </span>
           </div>
           <div className="space-y-4">
             {locationPerformance.map((item) => (
-              <div key={item.location} className="flex items-center justify-between gap-4 rounded-2xl border border-border/40 bg-card/90 p-4 shadow-brand-soft">
+              <div
+                key={item.location}
+                className="flex items-center justify-between gap-4 rounded-2xl border border-border/40 bg-card/90 p-4 shadow-brand-soft"
+              >
                 <div className="flex items-center gap-3">
                   <MapPin className="h-4 w-4 text-primary" />
                   <div>
-                    <p className="text-sm font-semibold text-foreground">{item.location}</p>
-                    <p className="text-xs text-muted-foreground">{item.growth} month-on-month</p>
+                    <p className="text-sm font-semibold text-foreground">
+                      {item.location}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {item.growth} month-on-month
+                    </p>
                   </div>
                 </div>
-                <span className="text-sm font-semibold text-foreground">K{item.revenue}</span>
+                <span className="text-sm font-semibold text-foreground">
+                  K{item.revenue}
+                </span>
               </div>
             ))}
           </div>
@@ -175,7 +261,10 @@ const OwnerDashboard = () => {
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h3 className="text-lg font-display">Shift closing summary</h3>
-            <p className="text-sm text-muted-foreground">Ensure balanced tills and send WhatsApp receipts to the owner nightly.</p>
+            <p className="text-sm text-muted-foreground">
+              Ensure balanced tills and send WhatsApp receipts to the owner
+              nightly.
+            </p>
           </div>
           <button type="button" className="btn-primary">
             Export to WhatsApp
@@ -183,13 +272,24 @@ const OwnerDashboard = () => {
         </div>
         <div className="grid gap-3">
           {shiftSummary.map((shift) => (
-            <div key={shift.cashier} className="glass-panel flex flex-wrap items-center justify-between gap-4 p-4">
+            <div
+              key={shift.cashier}
+              className="glass-panel flex flex-wrap items-center justify-between gap-4 p-4"
+            >
               <div>
-                <p className="text-sm font-semibold text-foreground">{shift.cashier}</p>
-                <p className="text-xs text-muted-foreground">Till {shift.till}</p>
+                <p className="text-sm font-semibold text-foreground">
+                  {shift.cashier}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Till {shift.till}
+                </p>
               </div>
-              <p className="text-sm font-semibold text-foreground">Sales {shift.sales}</p>
-              <p className="text-xs text-muted-foreground">Closed {shift.closeTime}</p>
+              <p className="text-sm font-semibold text-foreground">
+                Sales {shift.sales}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Closed {shift.closeTime}
+              </p>
               <span className="rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold text-primary">
                 {shift.variance}
               </span>
@@ -215,10 +315,16 @@ const MetricCard = ({
   accent?: boolean;
 }) => {
   return (
-    <div className={cn("metric-tile", accent && "border-primary/50 bg-primary/5")}> 
+    <div
+      className={cn("metric-tile", accent && "border-primary/50 bg-primary/5")}
+    >
       <div className="flex items-center justify-between">
-        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">{title}</p>
-        <span className="rounded-full bg-primary/15 p-2 text-primary">{icon}</span>
+        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+          {title}
+        </p>
+        <span className="rounded-full bg-primary/15 p-2 text-primary">
+          {icon}
+        </span>
       </div>
       <p className="text-3xl font-display text-foreground">{value}</p>
       <p className="text-xs text-muted-foreground">{footer}</p>
@@ -226,7 +332,15 @@ const MetricCard = ({
   );
 };
 
-const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: any[];
+  label?: string;
+}) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-2xl border border-border bg-card/95 px-4 py-3 text-xs shadow-brand-soft">

@@ -29,7 +29,9 @@ const App = () => {
           <BrowserRouter>
             <ShadToaster />
             <SonnerToaster />
-            <Suspense fallback={<LoadingScreen title="Loading Marco Aesthetics" /> }>
+            <Suspense
+              fallback={<LoadingScreen title="Loading Marco Aesthetics" />}
+            >
               <Routes>
                 <Route
                   path="/auth/login"

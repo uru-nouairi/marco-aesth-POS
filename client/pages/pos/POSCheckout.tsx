@@ -41,7 +41,8 @@ const sampleProducts: Product[] = [
     price: 6,
     stock: 42,
     category: "Earrings",
-    image: "https://images.unsplash.com/photo-1543294001-f7cd5d7fb516?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1543294001-f7cd5d7fb516?auto=format&fit=crop&w=400&q=80",
     bundle: { quantity: 3, price: 15 },
   },
   {
@@ -50,7 +51,8 @@ const sampleProducts: Product[] = [
     price: 10,
     stock: 28,
     category: "Necklaces",
-    image: "https://images.unsplash.com/photo-1600180758890-d2ed3f95bcede?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1600180758890-d2ed3f95bcede?auto=format&fit=crop&w=400&q=80",
     bundle: { quantity: 2, price: 18 },
   },
   {
@@ -59,7 +61,8 @@ const sampleProducts: Product[] = [
     price: 5,
     stock: 65,
     category: "Bracelets",
-    image: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=400&q=80",
   },
   {
     id: "SKU-004",
@@ -67,7 +70,8 @@ const sampleProducts: Product[] = [
     price: 4,
     stock: 51,
     category: "Anklets",
-    image: "https://images.unsplash.com/photo-1594633312681-425c1f234d80?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1594633312681-425c1f234d80?auto=format&fit=crop&w=400&q=80",
   },
   {
     id: "SKU-005",
@@ -75,7 +79,8 @@ const sampleProducts: Product[] = [
     price: 3,
     stock: 103,
     category: "Hair",
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80",
     bundle: { quantity: 4, price: 10 },
   },
   {
@@ -84,7 +89,8 @@ const sampleProducts: Product[] = [
     price: 7,
     stock: 37,
     category: "Charms",
-    image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=400&q=80",
   },
   {
     id: "SKU-007",
@@ -92,7 +98,8 @@ const sampleProducts: Product[] = [
     price: 5,
     stock: 44,
     category: "Earrings",
-    image: "https://images.unsplash.com/photo-1512499362904-43e7392aa7c4?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1512499362904-43e7392aa7c4?auto=format&fit=crop&w=400&q=80",
   },
   {
     id: "SKU-008",
@@ -100,7 +107,8 @@ const sampleProducts: Product[] = [
     price: 4,
     stock: 89,
     category: "Bracelets",
-    image: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
   },
   {
     id: "SKU-009",
@@ -108,7 +116,8 @@ const sampleProducts: Product[] = [
     price: 6,
     stock: 56,
     category: "Rings",
-    image: "https://images.unsplash.com/photo-1611599539395-0c07bda7e64c?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1611599539395-0c07bda7e64c?auto=format&fit=crop&w=400&q=80",
   },
   {
     id: "SKU-010",
@@ -116,7 +125,8 @@ const sampleProducts: Product[] = [
     price: 3,
     stock: 75,
     category: "Hair",
-    image: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
   },
 ];
 
@@ -134,7 +144,10 @@ const POSCheckout = () => {
     const cartItems = cart.map((item) => {
       let lineTotal = item.product.price * item.quantity;
       let bundleApplied = false;
-      if (item.product.bundle && item.quantity >= item.product.bundle.quantity) {
+      if (
+        item.product.bundle &&
+        item.quantity >= item.product.bundle.quantity
+      ) {
         const { quantity, price } = item.product.bundle;
         const bundleCount = Math.floor(item.quantity / quantity);
         const remainder = item.quantity % quantity;
@@ -217,7 +230,13 @@ const POSCheckout = () => {
       prev
         .map((item) =>
           item.product.id === productId
-            ? { ...item, quantity: Math.min(Math.max(item.quantity + delta, 1), item.product.stock) }
+            ? {
+                ...item,
+                quantity: Math.min(
+                  Math.max(item.quantity + delta, 1),
+                  item.product.stock,
+                ),
+              }
             : item,
         )
         .filter((item) => item.quantity > 0),
@@ -254,7 +273,10 @@ const POSCheckout = () => {
       try {
         await addDoc(collection(firestore, "transactions"), payload);
       } catch (error) {
-        console.error("Failed to create transaction online, storing offline", error);
+        console.error(
+          "Failed to create transaction online, storing offline",
+          error,
+        );
         updateQueueStorage([...offlineQueue, payload]);
       }
     } else {
@@ -271,11 +293,24 @@ const POSCheckout = () => {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="text-lg font-display">Product catalogue</h3>
-            <p className="text-sm text-muted-foreground">Tap items to add to cart. Bundle deals apply automatically.</p>
+            <p className="text-sm text-muted-foreground">
+              Tap items to add to cart. Bundle deals apply automatically.
+            </p>
           </div>
-          <div className={cn("rounded-full px-3 py-1 text-xs font-semibold", onlineStatus ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800")}> 
+          <div
+            className={cn(
+              "rounded-full px-3 py-1 text-xs font-semibold",
+              onlineStatus
+                ? "bg-emerald-100 text-emerald-800"
+                : "bg-amber-100 text-amber-800",
+            )}
+          >
             <span className="inline-flex items-center gap-1">
-              {onlineStatus ? <Wifi className="h-3.5 w-3.5" /> : <WifiOff className="h-3.5 w-3.5" />}
+              {onlineStatus ? (
+                <Wifi className="h-3.5 w-3.5" />
+              ) : (
+                <WifiOff className="h-3.5 w-3.5" />
+              )}
               {onlineStatus ? "Online" : "Offline mode"}
             </span>
           </div>
@@ -297,8 +332,12 @@ const POSCheckout = () => {
               </div>
               <div className="space-y-2 p-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-foreground">{product.name}</p>
-                  <span className="rounded-full bg-primary/15 px-2 py-0.5 text-xs font-semibold text-primary">K{product.price}</span>
+                  <p className="text-sm font-semibold text-foreground">
+                    {product.name}
+                  </p>
+                  <span className="rounded-full bg-primary/15 px-2 py-0.5 text-xs font-semibold text-primary">
+                    K{product.price}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
                   <span>{product.category}</span>
@@ -306,7 +345,8 @@ const POSCheckout = () => {
                 </div>
                 {product.bundle ? (
                   <div className="rounded-2xl bg-accent/40 px-3 py-1 text-xs font-medium text-accent-foreground">
-                    <Layers3 className="mr-1 inline h-3.5 w-3.5" /> {product.bundle.quantity} for K{product.bundle.price}
+                    <Layers3 className="mr-1 inline h-3.5 w-3.5" />{" "}
+                    {product.bundle.quantity} for K{product.bundle.price}
                   </div>
                 ) : null}
               </div>
@@ -318,11 +358,14 @@ const POSCheckout = () => {
       <aside className="flex flex-col gap-4 rounded-3xl border border-border/80 bg-card/95 p-4 shadow-brand">
         <header className="flex items-center justify-between">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Current sale</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+              Current sale
+            </p>
             <h3 className="text-xl font-display">Cart total</h3>
           </div>
           <div className="rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold text-primary">
-            <ShoppingCart className="mr-2 inline h-3.5 w-3.5" /> {cart.length} items
+            <ShoppingCart className="mr-2 inline h-3.5 w-3.5" /> {cart.length}{" "}
+            items
           </div>
         </header>
 
@@ -339,8 +382,12 @@ const POSCheckout = () => {
               >
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-foreground">{item.product.name}</p>
-                    <p className="text-xs text-muted-foreground">K{item.product.price} / unit</p>
+                    <p className="text-sm font-semibold text-foreground">
+                      {item.product.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      K{item.product.price} / unit
+                    </p>
                   </div>
                   <button
                     type="button"
@@ -359,7 +406,9 @@ const POSCheckout = () => {
                     >
                       <Minus className="h-3.5 w-3.5" />
                     </button>
-                    <span className="text-sm font-semibold">{item.quantity}</span>
+                    <span className="text-sm font-semibold">
+                      {item.quantity}
+                    </span>
                     <button
                       type="button"
                       onClick={() => handleQuantityChange(item.product.id, 1)}
@@ -369,8 +418,17 @@ const POSCheckout = () => {
                     </button>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-foreground">K{cartTotals.cartItems.find((cartItem) => cartItem.product.id === item.product.id)?.lineTotal.toFixed(2)}</p>
-                    {cartTotals.cartItems.find((cartItem) => cartItem.product.id === item.product.id)?.bundleApplied ? (
+                    <p className="text-sm font-semibold text-foreground">
+                      K
+                      {cartTotals.cartItems
+                        .find(
+                          (cartItem) => cartItem.product.id === item.product.id,
+                        )
+                        ?.lineTotal.toFixed(2)}
+                    </p>
+                    {cartTotals.cartItems.find(
+                      (cartItem) => cartItem.product.id === item.product.id,
+                    )?.bundleApplied ? (
                       <p className="text-xs text-primary">
                         <Tag className="mr-1 inline h-3 w-3" /> Bundle applied
                       </p>
@@ -393,9 +451,7 @@ const POSCheckout = () => {
             <span>K{cartTotals.subtotal.toFixed(2)}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span>
-              Tax (GST 10%)
-            </span>
+            <span>Tax (GST 10%)</span>
             <span>K{cartTotals.tax.toFixed(2)}</span>
           </div>
           <div className="flex items-center justify-between">
@@ -418,7 +474,11 @@ const POSCheckout = () => {
         </div>
 
         <div className="flex flex-col gap-3">
-          <button type="button" onClick={submitTransaction} className="btn-primary w-full justify-center py-3 text-base">
+          <button
+            type="button"
+            onClick={submitTransaction}
+            className="btn-primary w-full justify-center py-3 text-base"
+          >
             <ArrowRight className="h-5 w-5" /> Checkout (Cash only)
           </button>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -430,7 +490,8 @@ const POSCheckout = () => {
             </button>
           </div>
           <p className="text-center text-xs text-muted-foreground">
-            {offlineQueue.length} offline sale(s) ready to sync • {isSyncing ? "Syncing..." : "Automatic when online"}
+            {offlineQueue.length} offline sale(s) ready to sync •{" "}
+            {isSyncing ? "Syncing..." : "Automatic when online"}
           </p>
         </div>
       </aside>

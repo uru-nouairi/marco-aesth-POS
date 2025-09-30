@@ -11,30 +11,46 @@ const ChangeOwnerPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [feedback, setFeedback] = useState<{ tone: "error" | "success"; message: string } | null>(null);
+  const [feedback, setFeedback] = useState<{
+    tone: "error" | "success";
+    message: string;
+  } | null>(null);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFeedback(null);
 
     if (newPassword !== confirmPassword) {
-      setFeedback({ tone: "error", message: "New password entries do not match." });
+      setFeedback({
+        tone: "error",
+        message: "New password entries do not match.",
+      });
       return;
     }
 
     if (newPassword.length < 10) {
-      setFeedback({ tone: "error", message: "Use at least 10 characters for enhanced security." });
+      setFeedback({
+        tone: "error",
+        message: "Use at least 10 characters for enhanced security.",
+      });
       return;
     }
 
     try {
       setIsSubmitting(true);
       await changeOwnerPassword(currentPassword, newPassword);
-      setFeedback({ tone: "success", message: "Password updated successfully." });
+      setFeedback({
+        tone: "success",
+        message: "Password updated successfully.",
+      });
       setTimeout(() => navigate("/"), 1000);
     } catch (error) {
       console.error("Owner password change failed", error);
-      setFeedback({ tone: "error", message: "Unable to update password. Confirm your current password and try again." });
+      setFeedback({
+        tone: "error",
+        message:
+          "Unable to update password. Confirm your current password and try again.",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -55,15 +71,21 @@ const ChangeOwnerPassword = () => {
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/15">
             <KeyRound className="h-8 w-8 text-primary" />
           </div>
-          <h1 className="text-3xl font-display text-foreground">Secure your owner account</h1>
+          <h1 className="text-3xl font-display text-foreground">
+            Secure your owner account
+          </h1>
           <p className="text-sm text-muted-foreground">
-            Update the default password to protect transactions, inventory data, and cash drawer reports.
+            Update the default password to protect transactions, inventory data,
+            and cash drawer reports.
           </p>
         </div>
 
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground/80" htmlFor="current-password">
+            <label
+              className="text-sm font-medium text-foreground/80"
+              htmlFor="current-password"
+            >
               Current password
             </label>
             <input
@@ -78,7 +100,10 @@ const ChangeOwnerPassword = () => {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground/80" htmlFor="new-password">
+              <label
+                className="text-sm font-medium text-foreground/80"
+                htmlFor="new-password"
+              >
                 New password
               </label>
               <input
@@ -92,7 +117,10 @@ const ChangeOwnerPassword = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground/80" htmlFor="confirm-password">
+              <label
+                className="text-sm font-medium text-foreground/80"
+                htmlFor="confirm-password"
+              >
                 Confirm password
               </label>
               <input
@@ -110,7 +138,9 @@ const ChangeOwnerPassword = () => {
             <p className="font-semibold text-foreground/70">Password tips</p>
             <ul className="mt-1 list-disc space-y-1 pl-5">
               <li>Minimum 10 characters</li>
-              <li>Use a mix of upper and lowercase letters, numbers, and symbols</li>
+              <li>
+                Use a mix of upper and lowercase letters, numbers, and symbols
+              </li>
               <li>Rotate passwords each quarter and avoid reusing old ones</li>
             </ul>
           </div>
@@ -133,7 +163,11 @@ const ChangeOwnerPassword = () => {
             </div>
           ) : null}
 
-          <button type="submit" disabled={isSubmitting} className="btn-primary w-full py-3 text-base">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="btn-primary w-full py-3 text-base"
+          >
             {isSubmitting ? "Updating password..." : "Save secure password"}
           </button>
         </form>
