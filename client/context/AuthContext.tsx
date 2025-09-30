@@ -191,17 +191,47 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [auth, firestore]);
 
   const signIn = async (email: string, password: string) => {
-    if (!auth) throw new Error("Firebase not configured — cannot sign in");
-    await signInWithEmailAndPassword(auth, email.trim(), password);
+    if (!initialized) {
+      // Demo auth: accept default owner credentials for offline exploration
+      if (
+        email.trim().toLowerCase() === DEFAULT_OWNER_EMAIL &&
+        password === "PWmarco123!"
+      ) {
+        setUser({
+          uid: "demo-owner",
+          email: DEFAULT_OWNER_EMAIL,
+        } as User);
+        setProfile({
+          uid: "demo-owner",
+          email: DEFAULT_OWNER_EMAIL,
+          role: "owner",
+          status: "active",
+          displayName: "Connie T.",
+          createdAt: new Date(),
+          lastShiftClosedAt: null,
+          forcePasswordReset: false,
+        });
+        setRole("owner");
+        return;
+      }
+      throw new Error("Firebase not configured — demo mode accepts the preseeded owner credentials only");
+    }
+
+    await signInWithEmailAndPassword(auth!, email.trim(), password);
   };
 
   const signOut = async () => {
-    if (!auth) return;
-    await firebaseSignOut(auth);
+    if (!initialized) {
+      setUser(null);
+      setProfile(null);
+      setRole(null);
+      return;
+    }
+    await firebaseSignOut(auth!);
   };
 
   const createUserAccount = async ({ email, password, role: newRole, status = "active", displayName }: CreateUserPayload) => {
-    if (!functions || !firestore) throw new Error("Firebase not configured — cannot create users");
+    if (!initialized || !functions || !firestore) throw new Error("Firebase not configured — cannot create users");
     const callable = httpsCallable(functions, "createPosUser");
     try {
       const { data } = await callable({ email, password, role: newRole, status, displayName });
@@ -225,7 +255,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const resetCashierPin = async (uid: string, pin: string) => {
-    if (!firestore) throw new Error("Firebase not configured — cannot reset PIN");
+    if (!initialized || !firestore) throw new Error("Firebase not configured — cannot reset PIN");
     const hashedPin = await hashPin(pin);
     await updateDoc(doc(firestore, "users", uid), {
       posPin: hashedPin,
