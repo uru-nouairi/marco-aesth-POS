@@ -62,21 +62,42 @@ export const getFirebase = (): FirebaseResources => {
 
   const app = getApps()[0] ?? initializeApp(firebaseConfig);
 
-  const auth = initializeAuth(app, {
-    persistence: [indexedDBLocalPersistence, browserLocalPersistence],
-    popupRedirectResolver: undefined,
-  });
+  let auth: Auth | null = null;
+  try {
+    auth = initializeAuth(app, {
+      persistence: [indexedDBLocalPersistence, browserLocalPersistence],
+      popupRedirectResolver: undefined,
+    });
+  } catch (err) {
+    console.warn("[firebase] initializeAuth failed — auth unavailable in this environment", err);
+  }
 
-  const firestore = initializeFirestore(app, {
-    localCache: persistentLocalCache({
-      cacheSizeBytes: CACHE_SIZE_UNLIMITED,
-      tabManager: persistentMultipleTabManager(),
-    }),
-  });
+  let firestore: Firestore | null = null;
+  try {
+    firestore = initializeFirestore(app, {
+      localCache: persistentLocalCache({
+        cacheSizeBytes: CACHE_SIZE_UNLIMITED,
+        tabManager: persistentMultipleTabManager(),
+      }),
+    });
+  } catch (err) {
+    console.warn("[firebase] initializeFirestore failed — firestore unavailable in this environment", err);
+  }
 
-  const storage = getStorage(app);
-  const functionsRegion = import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION ?? "australia-southeast1";
-  const functions = getFunctions(app, functionsRegion);
+  let storage: FirebaseStorage | null = null;
+  try {
+    storage = getStorage(app);
+  } catch (err) {
+    console.warn("[firebase] getStorage failed — storage unavailable", err);
+  }
+
+  let functions: Functions | null = null;
+  try {
+    const functionsRegion = import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION ?? "australia-southeast1";
+    functions = getFunctions(app, functionsRegion);
+  } catch (err) {
+    console.warn("[firebase] getFunctions failed — functions unavailable", err);
+  }
 
   resources = { app, auth, firestore, storage, functions };
   return resources;
