@@ -104,10 +104,26 @@ export const getFirebase = (): FirebaseResources => {
 };
 
 export const firebaseApp = (): FirebaseApp => getFirebase().app;
-export const firebaseAuth = (): Auth => getFirebase().auth;
-export const firebaseFirestore = (): Firestore => getFirebase().firestore;
-export const firebaseStorage = (): FirebaseStorage => getFirebase().storage;
-export const firebaseFunctions = (): Functions => getFirebase().functions;
+export const firebaseAuth = (): Auth => {
+  const a = getFirebase().auth;
+  if (!a) throw new Error("Firebase Auth is not available in this environment");
+  return a;
+};
+export const firebaseFirestore = (): Firestore => {
+  const f = getFirebase().firestore;
+  if (!f) throw new Error("Firestore is not available in this environment");
+  return f;
+};
+export const firebaseStorage = (): FirebaseStorage => {
+  const s = getFirebase().storage;
+  if (!s) throw new Error("Firebase Storage is not available in this environment");
+  return s;
+};
+export const firebaseFunctions = (): Functions => {
+  const fn = getFirebase().functions;
+  if (!fn) throw new Error("Firebase Functions is not available in this environment");
+  return fn;
+};
 
 export type UserRole = "owner" | "cashier";
 
