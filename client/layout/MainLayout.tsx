@@ -144,7 +144,7 @@ const MainLayout = () => {
               <div className="flex items-center gap-3 rounded-3xl bg-card/80 px-3 py-2 shadow-brand-soft">
                 <div className="h-8 w-8 rounded-full bg-primary/15" />
                 <div className="hidden text-left sm:block">
-                  <p className="text-sm font-medium text-foreground/85">{profile?.displayName ?? "Owner"}</p>
+                  <p className="text-sm font-medium text-foreground/80">{profile?.displayName ?? "Owner"}</p>
                   <p className="text-xs text-muted-foreground">{role === "owner" ? "Owner" : "Cashier"}</p>
                 </div>
                 <button
