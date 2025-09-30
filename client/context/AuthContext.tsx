@@ -46,6 +46,7 @@ interface AuthContextValue {
   profile: UserProfile | null;
   role: UserRole | null;
   loading: boolean;
+  initialized: boolean; // indicates Firebase services are available
   requiresPasswordChange: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
