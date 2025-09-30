@@ -107,14 +107,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [requiresPasswordChange, setRequiresPasswordChange] = useState(false);
 
+  const initialized = !!auth && !!firestore;
+
   useEffect(() => {
-    if (!auth || !firestore) {
-      // Skip subscribing to Firebase when not configured
+    if (!initialized) {
+      // Demo fallback: pre-seed owner user for offline/demo mode so UI can be explored
+      setUser({
+        uid: "demo-owner",
+        email: DEFAULT_OWNER_EMAIL,
+        displayName: "Demo Owner",
+        // @ts-expect-error minimal mock
+      } as User);
+      setProfile({
+        uid: "demo-owner",
+        email: DEFAULT_OWNER_EMAIL,
+        role: "owner",
+        status: "active",
+        displayName: "Connie T.",
+        createdAt: new Date(),
+        lastShiftClosedAt: null,
+        forcePasswordReset: false,
+      });
+      setRole("owner");
       setLoading(false);
       return;
     }
 
-    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribeAuth = onAuthStateChanged(auth!, (currentUser) => {
       setUser(currentUser);
 
       if (!currentUser) {
