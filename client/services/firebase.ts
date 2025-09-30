@@ -17,10 +17,10 @@ import { getFunctions, type Functions } from "firebase/functions";
 
 interface FirebaseResources {
   app: FirebaseApp;
-  auth: Auth;
-  firestore: Firestore;
-  storage: FirebaseStorage;
-  functions: Functions;
+  auth: Auth | null;
+  firestore: Firestore | null;
+  storage: FirebaseStorage | null;
+  functions: Functions | null;
 }
 
 const requiredEnvKeys = [
