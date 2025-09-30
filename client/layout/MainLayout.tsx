@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, type ComponentType, type SVGProps, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 interface NavItem {
   label: string;
   path: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   roles: Array<"owner" | "cashier">;
   badge?: string;
 }
