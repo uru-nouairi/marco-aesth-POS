@@ -99,4 +99,5 @@ export interface UserProfile {
   posPin?: string;
   createdAt?: Date;
   lastShiftClosedAt?: Date | null;
+  forcePasswordReset?: boolean;
 }
