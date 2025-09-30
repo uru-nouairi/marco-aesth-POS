@@ -85,9 +85,20 @@ const mapFirestoreProfile = (docData: DocumentData, uid: string): UserProfile =>
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const auth = firebaseAuth();
-  const firestore = firebaseFirestore();
-  const functions = firebaseFunctions();
+  let auth: ReturnType<typeof firebaseAuth> | null = null;
+  let firestore: ReturnType<typeof firebaseFirestore> | null = null;
+  let functions: ReturnType<typeof firebaseFunctions> | null = null;
+  let initError: unknown = null;
+
+  try {
+    auth = firebaseAuth();
+    firestore = firebaseFirestore();
+    functions = firebaseFunctions();
+  } catch (err) {
+    // Firebase not configured in environment; fail gracefully and allow UI to render with limited features
+    console.warn("[firebase] initialization failed — running in offline/mock mode", err);
+    initError = err;
+  }
 
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -96,6 +107,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [requiresPasswordChange, setRequiresPasswordChange] = useState(false);
 
   useEffect(() => {
+    if (!auth || !firestore) {
+      // Skip subscribing to Firebase when not configured
+      setLoading(false);
+      return;
+    }
+
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
 
