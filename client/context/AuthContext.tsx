@@ -171,14 +171,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [auth, firestore]);
 
   const signIn = async (email: string, password: string) => {
+    if (!auth) throw new Error("Firebase not configured — cannot sign in");
     await signInWithEmailAndPassword(auth, email.trim(), password);
   };
 
   const signOut = async () => {
+    if (!auth) return;
     await firebaseSignOut(auth);
   };
 
   const createUserAccount = async ({ email, password, role: newRole, status = "active", displayName }: CreateUserPayload) => {
+    if (!functions || !firestore) throw new Error("Firebase not configured — cannot create users");
     const callable = httpsCallable(functions, "createPosUser");
     try {
       const { data } = await callable({ email, password, role: newRole, status, displayName });
@@ -202,6 +205,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const resetCashierPin = async (uid: string, pin: string) => {
+    if (!firestore) throw new Error("Firebase not configured — cannot reset PIN");
     const hashedPin = await hashPin(pin);
     await updateDoc(doc(firestore, "users", uid), {
       posPin: hashedPin,
