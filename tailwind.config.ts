@@ -58,10 +58,22 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      fontFamily: {
+        sans: ["'Inter'", "system-ui", "sans-serif"],
+        display: ["'Playfair Display'", "serif"],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        brand: "0 15px 40px -15px rgba(32, 23, 10, 0.35)",
+        "brand-soft": "0 10px 25px -10px rgba(32, 23, 10, 0.2)",
+      },
+      backgroundImage: {
+        "marco-gold-wash":
+          "radial-gradient(circle at 20% 20%, rgba(203, 164, 90, 0.2), transparent 55%), radial-gradient(circle at 80% 10%, rgba(125, 96, 62, 0.15), transparent 50%)",
       },
       keyframes: {
         "accordion-down": {
@@ -80,12 +92,21 @@ export default {
             height: "0",
           },
         },
+        shimmer: {
+          "0%": {
+            backgroundPosition: "-100% 0",
+          },
+          "100%": {
+            backgroundPosition: "100% 0",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        shimmer: "shimmer 2s infinite",
       },
-    },
+    }
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
