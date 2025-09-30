@@ -50,6 +50,7 @@
     --sidebar-accent-foreground: 240 10% 20%;
     --sidebar-border: 39 32% 84%;
     --sidebar-ring: 39 80% 45%;
+    --marco-body-gradient: radial-gradient(circle at 15% 20%, rgba(202, 161, 89, 0.25), transparent 45%), radial-gradient(circle at 80% 10%, rgba(112, 85, 56, 0.18), transparent 55%), linear-gradient(135deg, rgba(248, 242, 230, 0.98) 0%, rgba(244, 235, 217, 0.98) 48%, rgba(233, 219, 197, 0.94) 100%);
   }
 
   .dark {
@@ -89,6 +90,7 @@
     --sidebar-accent-foreground: 39 45% 90%;
     --sidebar-border: 244 16% 22%;
     --sidebar-ring: 39 72% 54%;
+    --marco-body-gradient: radial-gradient(circle at 20% 15%, rgba(203, 164, 90, 0.35), transparent 45%), radial-gradient(circle at 85% 5%, rgba(87, 66, 45, 0.25), transparent 55%), linear-gradient(160deg, rgba(20, 18, 24, 0.96) 0%, rgba(24, 21, 28, 0.95) 60%, rgba(32, 26, 38, 0.92) 100%);
   }
 }
 
