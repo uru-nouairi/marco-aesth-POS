@@ -49,6 +49,7 @@ const App = () => {
                 />
 
                 <Route
+                  path="/"
                   element={
                     <ProtectedRoute allowedRoles={["owner", "cashier"]}>
                       <MainLayout />
@@ -105,7 +106,6 @@ const App = () => {
                   />
                 </Route>
 
-                <Route path="/" element={<Navigate to="/" replace />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
