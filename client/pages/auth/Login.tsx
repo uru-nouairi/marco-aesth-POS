@@ -85,6 +85,14 @@ const LoginPage = () => {
           className="glass-panel w-full max-w-md p-8 sm:p-10"
         >
           <div className="space-y-4 text-center">
+            {!initialized ? (
+              <div className="rounded-2xl border border-border/60 bg-secondary/10 p-3 text-sm text-muted-foreground">
+                <strong className="block text-foreground/90">Demo mode active</strong>
+                <p className="mt-1">Firebase is not configured. Use the demo owner credentials to explore the app:</p>
+                <p className="mt-1 text-xs">owner@marcoaesthetics.png / PWmarco123!</p>
+              </div>
+            ) : null}
+
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/15 text-primary">
               <ShieldCheck className="h-8 w-8" strokeWidth={2.4} />
             </div>
