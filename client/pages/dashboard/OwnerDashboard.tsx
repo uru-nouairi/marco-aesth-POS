@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, Tooltip, BarChart, Bar, YAxis } from "recharts";
 import { BadgeCheck, TrendingUp, Flame, MapPin, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -211,7 +211,7 @@ const MetricCard = ({
   title: string;
   value: string;
   footer: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   accent?: boolean;
 }) => {
   return (
