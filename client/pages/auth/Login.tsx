@@ -11,7 +11,7 @@ const DEFAULT_CREDENTIALS = {
 };
 
 const LoginPage = () => {
-  const { signIn } = useAuth();
+  const { signIn, initialized } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState(DEFAULT_CREDENTIALS.email);
