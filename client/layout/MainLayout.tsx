@@ -1,4 +1,4 @@
-import { Fragment, type ComponentType, type SVGProps, useMemo, useState } from "react";
+import { Fragment, type ComponentType, type SVGProps, useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -41,6 +41,12 @@ const MainLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const items = useMemo(() => NAV_ITEMS.filter((item) => (role ? item.roles.includes(role) : false)), [role]);
+
+  useEffect(() => {
+    if (role === "cashier" && location.pathname === "/") {
+      navigate("/pos", { replace: true });
+    }
+  }, [role, location.pathname, navigate]);
 
   const handleNavigate = (path: string) => {
     navigate(path);
