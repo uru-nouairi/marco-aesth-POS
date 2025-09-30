@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus, LockReset, UserRoundCheck } from "lucide-react";
+import { Plus, KeyRound, UserCheck } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 interface UserRow {
@@ -60,7 +60,7 @@ const UsersPage = () => {
             <Plus className="mr-2 h-4 w-4" /> {isInviting ? "Creating..." : "Invite cashier"}
           </Button>
           <Button type="button" className="btn-primary">
-            <UserRoundCheck className="mr-2 h-4 w-4" /> Audit log
+            <UserCheck className="mr-2 h-4 w-4" /> Audit log
           </Button>
         </div>
       </section>
@@ -97,7 +97,7 @@ const UsersPage = () => {
                   <TableCell>
                     {user.role === "cashier" ? (
                       <Button variant="ghost" size="sm" onClick={() => handleResetPin(user.uid)}>
-                        <LockReset className="mr-2 h-4 w-4" /> Reset PIN
+                        <KeyRound className="mr-2 h-4 w-4" /> Reset PIN
                       </Button>
                     ) : (
                       <span className="text-xs text-muted-foreground">Owner secured</span>
