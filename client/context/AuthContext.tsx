@@ -285,6 +285,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       profile,
       role,
       loading,
+      initialized,
       requiresPasswordChange,
       signIn,
       signOut,
@@ -292,10 +293,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       resetCashierPin,
       changeOwnerPassword,
     }),
-    [user, profile, role, loading, requiresPasswordChange],
+    [user, profile, role, loading, requiresPasswordChange, initialized],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };
 
 export const useAuth = () => {
