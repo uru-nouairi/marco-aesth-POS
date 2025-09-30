@@ -46,7 +46,7 @@ const firebaseConfig = {
   storageBucket: "marco-aesth-pos.firebasestorage.app",
   messagingSenderId: "361718895011",
   appId: "1:361718895011:web:aca8c321c247fed1e14a16",
-  measurementId: "G-W9Q69JVLCV"
+  measurementId: "G-W9Q69JVLCV",
 };
 
 // Initialize Firebase
