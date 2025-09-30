@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import { Download, CalendarRange, PieChart, BarChart3, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -135,7 +135,7 @@ const ReportsPage = () => {
   );
 };
 
-const MetricCard = ({ title, value, description, icon }: { title: string; value: string; description: string; icon: React.ReactNode }) => {
+const MetricCard = ({ title, value, description, icon }: { title: string; value: string; description: string; icon: ReactNode }) => {
   return (
     <Card className="glass-panel border-0">
       <CardHeader className="flex flex-row items-center justify-between">
