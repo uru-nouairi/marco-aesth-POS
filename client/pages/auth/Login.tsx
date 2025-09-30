@@ -28,8 +28,9 @@ const LoginPage = () => {
       await signIn(email, password);
       const redirectPath = (location.state as { from?: Location })?.from?.pathname ?? "/";
       navigate(redirectPath, { replace: true });
-    } catch (err) {
-      setError("Unable to authenticate. Check your credentials and try again.");
+    } catch (err: any) {
+      const message = err?.message ?? String(err) ?? "Unable to authenticate. Check your credentials and try again.";
+      setError(message);
       console.error("Login failed", err);
     } finally {
       setIsSubmitting(false);
