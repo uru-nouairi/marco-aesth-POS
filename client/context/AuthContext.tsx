@@ -127,7 +127,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         uid: "demo-owner",
         email: DEFAULT_OWNER_EMAIL,
         displayName: "Demo Owner",
-        // @ts-expect-error minimal mock
       } as User);
       setProfile({
         uid: "demo-owner",
