@@ -11,7 +11,7 @@ const DEFAULT_CREDENTIALS = {
 };
 
 const LoginPage = () => {
-  const { signIn, initialized } = useAuth();
+  const { signIn, signInWithGoogle, initialized } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState(DEFAULT_CREDENTIALS.email);
@@ -36,6 +36,26 @@ const LoginPage = () => {
         "Unable to authenticate. Check your credentials and try again.";
       setError(message);
       console.error("Login failed", err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      await signInWithGoogle();
+      const redirectPath =
+        (location.state as { from?: Location })?.from?.pathname ?? "/";
+      navigate(redirectPath, { replace: true });
+    } catch (err: any) {
+      const message =
+        err?.message ??
+        String(err) ??
+        "Unable to authenticate with Google. Please try again.";
+      setError(message);
+      console.error("Google Sign-In failed", err);
     } finally {
       setIsSubmitting(false);
     }
