@@ -255,10 +255,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       credential = await signInWithEmailAndPassword(auth!, email.trim(), password);
     } catch (err) {
       console.error("Firebase signIn failed:", err);
-      // Re-throw so callers can show UI messages, but include friendly guidance
-      throw new Error(
-        (err as Error).message || "Authentication failed — verify credentials and network.",
-      );
+      const code = (err as any)?.code ?? "unknown";
+      const message = (err as Error)?.message ?? "Authentication failed — verify credentials and network.";
+      // Include Firebase error code so UI can render clearer guidance
+      throw new Error(`${code}: ${message}`);
     }
 
     if (firestore) {
