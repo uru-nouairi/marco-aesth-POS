@@ -8,9 +8,11 @@ import {
 } from "react";
 import {
   EmailAuthProvider,
+  GoogleAuthProvider,
   onAuthStateChanged,
   reauthenticateWithCredential,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut as firebaseSignOut,
   updatePassword,
 } from "firebase/auth";
