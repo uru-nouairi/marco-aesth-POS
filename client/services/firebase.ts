@@ -49,7 +49,7 @@ const firebaseConfig: FirebaseOptions = {
 function validateConfig(): void {
   const missing = requiredEnvKeys.filter((key) => !env[key]);
   if (missing.length > 0) {
-    console.warn(
+    throw new Error(
       `[firebase] Missing configuration values: ${missing.join(", ")}. Add them to your Vite environment file to connect Firebase.`,
     );
   }
