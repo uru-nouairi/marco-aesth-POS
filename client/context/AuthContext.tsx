@@ -51,6 +51,7 @@ interface AuthContextValue {
   initialized: boolean; // indicates Firebase services are available
   requiresPasswordChange: boolean;
   signIn: (email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   createUserAccount: (payload: CreateUserPayload) => Promise<void>;
   resetCashierPin: (uid: string, pin: string) => Promise<void>;
