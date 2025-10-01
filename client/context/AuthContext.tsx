@@ -207,6 +207,44 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [auth, firestore]);
 
+  const ensureNetworkReady = async () => {
+    if (typeof window !== "undefined" && !navigator.onLine) {
+      throw new Error(
+        "Network unavailable — check your internet connection and try again.",
+      );
+    }
+
+    try {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), 3000);
+      await fetch("https://www.gstatic.com/generate_204", {
+        signal: controller.signal,
+      });
+      clearTimeout(id);
+    } catch (err) {
+      throw new Error(
+        "Network check failed — the app cannot reach Firebase. Check firewall, VPN, or browser blocking and try again.",
+      );
+    }
+  };
+
+  const recordLoginEvent = async (uid: string, email: string) => {
+    if (!firestore) {
+      return;
+    }
+
+    try {
+      await addDoc(collection(firestore, "loginEvents"), {
+        uid,
+        email,
+        occurredAt: serverTimestamp(),
+        userAgent: typeof window !== "undefined" ? navigator.userAgent : undefined,
+      });
+    } catch (err) {
+      console.warn("Failed to record loginEvent:", err);
+    }
+  };
+
   const signIn = async (email: string, password: string) => {
     if (!initialized) {
       // Demo auth: accept default owner credentials for offline exploration
@@ -236,45 +274,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       );
     }
 
-    // Quick offline/network check
-    if (typeof window !== "undefined" && !navigator.onLine) {
-      throw new Error("Network unavailable — check your internet connection and try again.");
-    }
+    await ensureNetworkReady();
 
-    // perform a lightweight connectivity probe to Google (gives 204 when reachable)
     try {
-      const controller = new AbortController();
-      const id = setTimeout(() => controller.abort(), 3000);
-      await fetch("https://www.gstatic.com/generate_204", { signal: controller.signal });
-      clearTimeout(id);
-    } catch (err) {
-      throw new Error(
-        "Network check failed — the app cannot reach Firebase. Check firewall, VPN, or browser blocking and try again.",
+      const credential = await signInWithEmailAndPassword(
+        auth!,
+        email.trim(),
+        password,
       );
-    }
-
-    let credential;
-    try {
-      credential = await signInWithEmailAndPassword(auth!, email.trim(), password);
+      await recordLoginEvent(
+        credential.user.uid,
+        credential.user.email ?? email.trim(),
+      );
     } catch (err) {
       console.error("Firebase signIn failed:", err);
       const code = (err as any)?.code ?? "unknown";
-      const message = (err as Error)?.message ?? "Authentication failed — verify credentials and network.";
-      // Include Firebase error code so UI can render clearer guidance
+      const message =
+        (err as Error)?.message ??
+        "Authentication failed — verify credentials and network.";
       throw new Error(`${code}: ${message}`);
-    }
-
-    if (firestore) {
-      try {
-        await addDoc(collection(firestore, "loginEvents"), {
-          uid: credential.user.uid,
-          email: credential.user.email ?? email.trim(),
-          occurredAt: serverTimestamp(),
-          userAgent: typeof window !== "undefined" ? navigator.userAgent : undefined,
-        });
-      } catch (err) {
-        console.warn("Failed to record loginEvent:", err);
-      }
     }
   };
 
