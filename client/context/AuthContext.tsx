@@ -233,20 +233,45 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       );
     }
 
-    const credential = await signInWithEmailAndPassword(
-      auth!,
-      email.trim(),
-      password,
-    );
+    // Quick offline/network check
+    if (typeof window !== "undefined" && !navigator.onLine) {
+      throw new Error("Network unavailable — check your internet connection and try again.");
+    }
+
+    // perform a lightweight connectivity probe to Google (gives 204 when reachable)
+    try {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), 3000);
+      await fetch("https://www.gstatic.com/generate_204", { signal: controller.signal });
+      clearTimeout(id);
+    } catch (err) {
+      throw new Error(
+        "Network check failed — the app cannot reach Firebase. Check firewall, VPN, or browser blocking and try again.",
+      );
+    }
+
+    let credential;
+    try {
+      credential = await signInWithEmailAndPassword(auth!, email.trim(), password);
+    } catch (err) {
+      console.error("Firebase signIn failed:", err);
+      // Re-throw so callers can show UI messages, but include friendly guidance
+      throw new Error(
+        (err as Error).message || "Authentication failed — verify credentials and network.",
+      );
+    }
 
     if (firestore) {
-      await addDoc(collection(firestore, "loginEvents"), {
-        uid: credential.user.uid,
-        email: credential.user.email ?? email.trim(),
-        occurredAt: serverTimestamp(),
-        userAgent:
-          typeof window !== "undefined" ? navigator.userAgent : undefined,
-      });
+      try {
+        await addDoc(collection(firestore, "loginEvents"), {
+          uid: credential.user.uid,
+          email: credential.user.email ?? email.trim(),
+          occurredAt: serverTimestamp(),
+          userAgent: typeof window !== "undefined" ? navigator.userAgent : undefined,
+        });
+      } catch (err) {
+        console.warn("Failed to record loginEvent:", err);
+      }
     }
   };
 
