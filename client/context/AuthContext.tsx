@@ -233,7 +233,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       );
     }
 
-    await signInWithEmailAndPassword(auth!, email.trim(), password);
+    const credential = await signInWithEmailAndPassword(
+      auth!,
+      email.trim(),
+      password,
+    );
+
+    if (firestore) {
+      await addDoc(collection(firestore, "loginEvents"), {
+        uid: credential.user.uid,
+        email: credential.user.email ?? email.trim(),
+        occurredAt: serverTimestamp(),
+        userAgent:
+          typeof window !== "undefined" ? navigator.userAgent : undefined,
+      });
+    }
   };
 
   const signOut = async () => {
