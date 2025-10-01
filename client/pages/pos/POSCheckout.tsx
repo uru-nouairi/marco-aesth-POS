@@ -275,7 +275,12 @@ const POSCheckout = () => {
 
     if (navigator.onLine) {
       try {
-        await addDoc(collection(firestore, "transactions"), payload);
+        if (!firestore) {
+          console.warn("Firestore unavailable — storing transaction offline");
+          updateQueueStorage([...offlineQueue, payload]);
+        } else {
+          await addDoc(collection(firestore, "transactions"), payload);
+        }
       } catch (error) {
         console.error(
           "Failed to create transaction online, storing offline",
