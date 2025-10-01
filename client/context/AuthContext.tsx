@@ -296,6 +296,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const signInWithGoogle = async () => {
+    if (!initialized) {
+      throw new Error(
+        "Firebase not configured — Google Sign-In unavailable in demo mode.",
+      );
+    }
+
+    await ensureNetworkReady();
+
+    try {
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
+      const credential = await signInWithPopup(auth!, provider);
+      await recordLoginEvent(
+        credential.user.uid,
+        credential.user.email ?? credential.user.displayName ?? "unknown",
+      );
+    } catch (err) {
+      console.error("Firebase Google sign-in failed:", err);
+      const code = (err as any)?.code ?? "unknown";
+      const message =
+        (err as Error)?.message ?? "Google authentication failed.";
+      throw new Error(`${code}: ${message}`);
+    }
+  };
+
   const signOut = async () => {
     if (!initialized) {
       setUser(null);
