@@ -35,13 +35,14 @@ const requiredEnvKeys = [
   "VITE_FIREBASE_APP_ID",
 ] as const;
 
-function validateConfig(): void {
+function validateConfig(): string[] {
   const missing = requiredEnvKeys.filter((key) => !env[key]);
   if (missing.length > 0) {
-    throw new Error(
+    console.warn(
       `[firebase] Missing configuration values: ${missing.join(", ")}. Add them to your Vite environment file to connect Firebase.`,
     );
   }
+  return missing;
 }
 
 let resources: FirebaseResources | null = null;
@@ -61,7 +62,18 @@ export const getFirebase = (): FirebaseResources => {
     return resources;
   }
 
-  validateConfig();
+  const missing = validateConfig();
+  if (missing.length > 0) {
+    // Return placeholder resources so callers won't throw during render — features will be disabled
+    resources = {
+      app: ({} as FirebaseApp),
+      auth: null,
+      firestore: null,
+      storage: null,
+      functions: null,
+    };
+    return resources;
+  }
 
   const app = getApps()[0] ?? initializeApp(firebaseConfig);
 
@@ -114,27 +126,17 @@ export const getFirebase = (): FirebaseResources => {
 };
 
 export const firebaseApp = (): FirebaseApp => getFirebase().app;
-export const firebaseAuth = (): Auth => {
-  const a = getFirebase().auth;
-  if (!a) throw new Error("Firebase Auth is not available in this environment");
-  return a;
+export const firebaseAuth = (): Auth | null => {
+  return getFirebase().auth;
 };
-export const firebaseFirestore = (): Firestore => {
-  const f = getFirebase().firestore;
-  if (!f) throw new Error("Firestore is not available in this environment");
-  return f;
+export const firebaseFirestore = (): Firestore | null => {
+  return getFirebase().firestore;
 };
-export const firebaseStorage = (): FirebaseStorage => {
-  const s = getFirebase().storage;
-  if (!s)
-    throw new Error("Firebase Storage is not available in this environment");
-  return s;
+export const firebaseStorage = (): FirebaseStorage | null => {
+  return getFirebase().storage;
 };
-export const firebaseFunctions = (): Functions => {
-  const fn = getFirebase().functions;
-  if (!fn)
-    throw new Error("Firebase Functions is not available in this environment");
-  return fn;
+export const firebaseFunctions = (): Functions | null => {
+  return getFirebase().functions;
 };
 
 export type UserRole = "owner" | "cashier";
