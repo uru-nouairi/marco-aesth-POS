@@ -15,6 +15,8 @@ import {
   updatePassword,
 } from "firebase/auth";
 import {
+  addDoc,
+  collection,
   doc,
   onSnapshot,
   serverTimestamp,
