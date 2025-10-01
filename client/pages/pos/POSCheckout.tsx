@@ -200,6 +200,10 @@ const POSCheckout = () => {
     while (queue.length) {
       const entry = queue[0];
       try {
+        if (!firestore) {
+          console.warn("Firestore unavailable — cannot sync offline transactions");
+          break;
+        }
         await addDoc(collection(firestore, "transactions"), entry);
         queue.shift();
       } catch (error) {
