@@ -24,27 +24,17 @@ interface FirebaseResources {
   functions: Functions | null;
 }
 
-const requiredEnvKeys = [
-  apiKey: "AIzaSyB0uFWcBsUK_KVzr3YM98u-6F4KM4yNxJg",
-  authDomain: "marcos-aes.firebaseapp.com",
-  projectId: "marcos-aes",
-  storageBucket: "marcos-aes.firebasestorage.app",
-  messagingSenderId: "161944649845",
-  appId: "1:161944649845:web:141f00a90ad47c3edf783c",
-  measurementId: "G-51C7DL10Z9"
-] as const;
-
 const env = import.meta.env as Record<string, string | undefined>;
 
-const firebaseConfig: FirebaseOptions = {
-  apiKey: env.VITE_FIREBASE_API_KEY,
-  authDomain: env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: env.VITE_FIREBASE_APP_ID,
-  measurementId: env.VITE_FIREBASE_MEASUREMENT_ID,
-};
+const requiredEnvKeys = [
+  "VITE_FIREBASE_API_KEY",
+  "VITE_FIREBASE_AUTH_DOMAIN",
+  "VITE_FIREBASE_PROJECT_ID",
+  "VITE_FIREBASE_STORAGE_BUCKET",
+  "VITE_FIREBASE_MESSAGING_SENDER_ID",
+  "VITE_FIREBASE_APP_ID",
+  "VITE_FIREBASE_MEASUREMENT_ID"
+] as const;
 
 function validateConfig(): void {
   const missing = requiredEnvKeys.filter((key) => !env[key]);
@@ -56,6 +46,16 @@ function validateConfig(): void {
 }
 
 let resources: FirebaseResources | null = null;
+
+const firebaseConfig: FirebaseOptions = {
+  apiKey: env.VITE_FIREBASE_API_KEY,
+  authDomain: env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: env.VITE_FIREBASE_APP_ID,
+  measurementId: env.VITE_FIREBASE_MEASUREMENT_ID,
+};
 
 export const getFirebase = (): FirebaseResources => {
   if (resources) {
