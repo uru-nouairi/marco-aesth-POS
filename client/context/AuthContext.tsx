@@ -270,7 +270,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
       throw new Error(
-        "Firebase not configured — demo mode accepts the preseeded owner credentials only",
+        "Firebase not configured ��� demo mode accepts the preseeded owner credentials only",
       );
     }
 
@@ -410,12 +410,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       initialized,
       requiresPasswordChange,
       signIn,
+      signInWithGoogle,
       signOut,
       createUserAccount,
       resetCashierPin,
       changeOwnerPassword,
     }),
-    [user, profile, role, loading, requiresPasswordChange, initialized],
+    [
+      user,
+      profile,
+      role,
+      loading,
+      requiresPasswordChange,
+      initialized,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
