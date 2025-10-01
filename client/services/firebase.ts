@@ -25,12 +25,13 @@ interface FirebaseResources {
 }
 
 const requiredEnvKeys = [
-  "VITE_FIREBASE_API_KEY",
-  "VITE_FIREBASE_AUTH_DOMAIN",
-  "VITE_FIREBASE_PROJECT_ID",
-  "VITE_FIREBASE_STORAGE_BUCKET",
-  "VITE_FIREBASE_MESSAGING_SENDER_ID",
-  "VITE_FIREBASE_APP_ID",
+  apiKey: "AIzaSyB0uFWcBsUK_KVzr3YM98u-6F4KM4yNxJg",
+  authDomain: "marcos-aes.firebaseapp.com",
+  projectId: "marcos-aes",
+  storageBucket: "marcos-aes.firebasestorage.app",
+  messagingSenderId: "161944649845",
+  appId: "1:161944649845:web:141f00a90ad47c3edf783c",
+  measurementId: "G-51C7DL10Z9"
 ] as const;
 
 const env = import.meta.env as Record<string, string | undefined>;
