@@ -24,8 +24,6 @@ interface FirebaseResources {
   functions: Functions | null;
 }
 
-const env = import.meta.env as Record<string, string | undefined>;
-
 const requiredEnvKeys = [
   "VITE_FIREBASE_API_KEY",
   "VITE_FIREBASE_AUTH_DOMAIN",
@@ -35,9 +33,20 @@ const requiredEnvKeys = [
   "VITE_FIREBASE_APP_ID",
 ] as const;
 
-function validateConfig(): string[] {
+function getRuntimeEnv(): Record<string, string | undefined> {
+  // Prefer Vite's import.meta.env in browser build; fall back to process.env (server) or window.__env if present
+  const meta = (typeof import.meta !== "undefined" ? (import.meta as any).env : {}) as Record<string, string | undefined>;
+  const proc = typeof process !== "undefined" && (process.env as Record<string, string | undefined>) ? (process.env as Record<string, string | undefined>) : {};
+  const win = typeof window !== "undefined" && (window as any).__env ? (window as any).__env : {};
+  return { ...proc, ...meta, ...win } as Record<string, string | undefined>;
+}
+
+function validateConfig(env: Record<string, string | undefined>): string[] {
   const missing = requiredEnvKeys.filter((key) => !env[key]);
   if (missing.length > 0) {
+    // warn but do not throw so the app can continue in offline/mock mode
+    // keep the message clear for debugging
+    // eslint-disable-next-line no-console
     console.warn(
       `[firebase] Missing configuration values: ${missing.join(", ")}. Add them to your Vite environment file to connect Firebase.`,
     );
@@ -47,24 +56,11 @@ function validateConfig(): string[] {
 
 let resources: FirebaseResources | null = null;
 
-const firebaseConfig: FirebaseOptions = {
-  apiKey: env.VITE_FIREBASE_API_KEY,
-  authDomain: env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: env.VITE_FIREBASE_APP_ID,
-  measurementId: env.VITE_FIREBASE_MEASUREMENT_ID,
-};
-
 export const getFirebase = (): FirebaseResources => {
-  if (resources) {
-    return resources;
-  }
+  if (resources) return resources;
 
-  const missing = validateConfig();
-  if (missing.length > 0) {
-    // Return placeholder resources so callers won't throw during render — features will be disabled
+  // If running in a non-browser environment (SSR), avoid initializing browser-only Firebase services
+  if (typeof window === "undefined") {
     resources = {
       app: ({} as FirebaseApp),
       auth: null,
@@ -75,6 +71,29 @@ export const getFirebase = (): FirebaseResources => {
     return resources;
   }
 
+  const env = getRuntimeEnv();
+  const missing = validateConfig(env);
+  if (missing.length > 0) {
+    resources = {
+      app: ({} as FirebaseApp),
+      auth: null,
+      firestore: null,
+      storage: null,
+      functions: null,
+    };
+    return resources;
+  }
+
+  const firebaseConfig: FirebaseOptions = {
+    apiKey: env.VITE_FIREBASE_API_KEY as string,
+    authDomain: env.VITE_FIREBASE_AUTH_DOMAIN as string,
+    projectId: env.VITE_FIREBASE_PROJECT_ID as string,
+    storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET as string,
+    messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID as string,
+    appId: env.VITE_FIREBASE_APP_ID as string,
+    measurementId: env.VITE_FIREBASE_MEASUREMENT_ID as string | undefined,
+  };
+
   const app = getApps()[0] ?? initializeApp(firebaseConfig);
 
   let auth: Auth | null = null;
@@ -84,10 +103,8 @@ export const getFirebase = (): FirebaseResources => {
       popupRedirectResolver: undefined,
     });
   } catch (err) {
-    console.warn(
-      "[firebase] initializeAuth failed — auth unavailable in this environment",
-      err,
-    );
+    // eslint-disable-next-line no-console
+    console.warn("[firebase] initializeAuth failed — auth unavailable in this environment", err);
   }
 
   let firestore: Firestore | null = null;
@@ -99,25 +116,24 @@ export const getFirebase = (): FirebaseResources => {
       }),
     });
   } catch (err) {
-    console.warn(
-      "[firebase] initializeFirestore failed — firestore unavailable in this environment",
-      err,
-    );
+    // eslint-disable-next-line no-console
+    console.warn("[firebase] initializeFirestore failed — firestore unavailable in this environment", err);
   }
 
   let storage: FirebaseStorage | null = null;
   try {
     storage = getStorage(app);
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.warn("[firebase] getStorage failed — storage unavailable", err);
   }
 
   let functions: Functions | null = null;
   try {
-    const functionsRegion =
-      import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION ?? "australia-southeast1";
-    functions = getFunctions(app, functionsRegion);
+    const functionsRegion = (getRuntimeEnv().VITE_FIREBASE_FUNCTIONS_REGION as string) ?? "australia-southeast1";
+    functions = getFunctions(app, functionsRegion as any);
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.warn("[firebase] getFunctions failed — functions unavailable", err);
   }
 
