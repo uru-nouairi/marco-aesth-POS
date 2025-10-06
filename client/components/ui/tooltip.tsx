@@ -36,7 +36,7 @@ export const TooltipTrigger: React.FC<React.PropsWithChildren<Record<string, unk
 
 export const TooltipContent = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { sideOffset?: number }
+  React.HTMLAttributes<HTMLDivElement> & { sideOffset?: number } & Record<string, any>
 >(({ className, sideOffset = 4, ...props }, ref) => {
   return (
     <div
