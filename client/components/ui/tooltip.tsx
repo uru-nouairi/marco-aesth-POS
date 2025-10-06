@@ -15,8 +15,7 @@ export function TooltipProvider({ children, ...props }: TooltipProviderProps) {
   try {
     // Try rendering the Radix provider; if it throws, we'll catch and fall back.
     return (
-      // @ts-expect-error - forward props to Radix provider when available
-      <TooltipPrimitive.Provider {...props}>{children}</TooltipPrimitive.Provider>
+      <TooltipPrimitive.Provider {...(props as any)}>{children}</TooltipPrimitive.Provider>
     );
   } catch (err) {
     // eslint-disable-next-line no-console
