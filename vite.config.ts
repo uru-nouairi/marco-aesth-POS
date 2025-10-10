@@ -19,12 +19,13 @@ export default defineConfig(({ mode }) => ({
   plugins: [react(), expressPlugin()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./client"),
-      "@shared": path.resolve(__dirname, "./shared"),
+      "@": path.resolve(__dirname, "./client"),     // ✅ matches your main frontend folder
+      "@shared": path.resolve(__dirname, "./shared"), // ✅ shared code folder
     },
   },
 }));
 
+// Custom Express integration for dev mode
 function expressPlugin(): Plugin {
   return {
     name: "express-plugin",
