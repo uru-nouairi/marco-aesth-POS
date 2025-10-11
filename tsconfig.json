@@ -2,13 +2,10 @@
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -19,32 +16,29 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+
     /* Linting */
-    "strict": false,
+    "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitAny": false,
     "noFallthroughCasesInSwitch": false,
     "strictNullChecks": false,
-    /* ✅ Path mapping */
+
+    /* Path mapping */
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@shared/*": [
-        "./shared/*"
-      ]
+      "@/*": ["./client/*"],
+      "@shared/*": ["./shared/*"]
     }
   },
   "include": [
-    "src/**/*",
+    "client/**/*",
+    "server/**/*",
     "shared/**/*",
     "vite.config.ts",
     "vite.config.server.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "exclude": ["node_modules", "dist"]
 }
