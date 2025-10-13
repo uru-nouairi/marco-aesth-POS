@@ -204,7 +204,9 @@ const POSCheckout = () => {
       const entry = queue[0];
       try {
         if (!firestore) {
-          console.warn("Firestore unavailable — cannot sync offline transactions");
+          console.warn(
+            "Firestore unavailable — cannot sync offline transactions",
+          );
           break;
         }
         await addDoc(collection(firestore, "transactions"), entry);
@@ -284,7 +286,8 @@ const POSCheckout = () => {
 
     cartTotals.cartItems.forEach((item) => {
       const label = `${item.product.name} x${item.quantity}`;
-      const paddedLabel = label.length >= 26 ? `${label.slice(0, 25)}…` : label.padEnd(26, " ");
+      const paddedLabel =
+        label.length >= 26 ? `${label.slice(0, 25)}…` : label.padEnd(26, " ");
       lines.push(`${paddedLabel}${formatCurrency(item.lineTotal)}`);
     });
 
@@ -330,7 +333,8 @@ const POSCheckout = () => {
       }
 
       const service = await server.getPrimaryService(serviceUuid);
-      const characteristic = await service.getCharacteristic(characteristicUuid);
+      const characteristic =
+        await service.getCharacteristic(characteristicUuid);
       const encoder = new TextEncoder();
       const payload = encoder.encode(`${text}\n\n`);
 
@@ -352,7 +356,12 @@ const POSCheckout = () => {
   };
 
   const escapeHtml = (value: string) =>
-    value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    value
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
 
   const openPrintPreview = (receipt: { lines: string[]; text: string }) => {
     const preview = window.open("", "print-receipt", "width=480,height=640");
@@ -360,7 +369,9 @@ const POSCheckout = () => {
       throw new Error("Allow pop-ups to open the receipt preview.");
     }
 
-    const content = receipt.lines.map((line) => escapeHtml(line)).join("<br />");
+    const content = receipt.lines
+      .map((line) => escapeHtml(line))
+      .join("<br />");
 
     preview.document.write(`<!doctype html>
 <html>
@@ -450,7 +461,11 @@ const POSCheckout = () => {
 
     setIsSendingReceipt(true);
     const receipt = buildReceipt();
-    const message = [...receipt.lines, "", "Reply to this message if you need anything else."].join("\n");
+    const message = [
+      ...receipt.lines,
+      "",
+      "Reply to this message if you need anything else.",
+    ].join("\n");
 
     try {
       const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
@@ -725,7 +740,9 @@ const POSCheckout = () => {
               aria-busy={isPrinting}
             >
               <Printer className="h-4 w-4" />
-              {isPrinting ? "Connecting printer..." : "Print receipt (Bluetooth)"}
+              {isPrinting
+                ? "Connecting printer..."
+                : "Print receipt (Bluetooth)"}
             </button>
             <button
               type="button"
@@ -735,7 +752,9 @@ const POSCheckout = () => {
               aria-busy={isSendingReceipt}
             >
               <MessageCircle className="h-4 w-4" />
-              {isSendingReceipt ? "Preparing message..." : "Send WhatsApp receipt"}
+              {isSendingReceipt
+                ? "Preparing message..."
+                : "Send WhatsApp receipt"}
             </button>
           </div>
           <p className="text-center text-xs text-muted-foreground">
