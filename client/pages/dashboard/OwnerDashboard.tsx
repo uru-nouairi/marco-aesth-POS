@@ -78,6 +78,32 @@ const OwnerDashboard = () => {
     [],
   );
 
+  const handleExportToWhatsApp = () => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const shiftLines = shiftSummary.map(
+      (shift) =>
+        `• ${shift.cashier} — ${shift.sales} (till ${shift.till}, closed ${shift.closeTime}, ${shift.variance})`,
+    );
+
+    const summarySections = [
+      "*Shift closing summary*",
+      `Date: ${new Date().toLocaleDateString()}`,
+      "",
+      ...shiftLines,
+      "",
+      `Weekly sales: K${totalWeeklySales.toLocaleString()}`,
+      `Transactions: ${weeklyTransactions}`,
+      `Avg margin: ${avgMargin}%`,
+    ];
+
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(summarySections.join("\n"))}`;
+
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <div className="space-y-8">
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -266,7 +292,11 @@ const OwnerDashboard = () => {
               nightly.
             </p>
           </div>
-          <button type="button" className="btn-primary">
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={handleExportToWhatsApp}
+          >
             Export to WhatsApp
           </button>
         </div>
