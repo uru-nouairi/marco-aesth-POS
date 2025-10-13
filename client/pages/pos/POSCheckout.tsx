@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { firebaseFirestore } from "@/services/firebase";
 import { cn } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
 
 export interface Product {
   id: string;
@@ -138,6 +139,8 @@ const POSCheckout = () => {
   const [isSyncing, setIsSyncing] = useState(false);
   const [offlineQueue, setOfflineQueue] = useState<any[]>([]);
   const [onlineStatus, setOnlineStatus] = useState(() => navigator.onLine);
+  const [isPrinting, setIsPrinting] = useState(false);
+  const [isSendingReceipt, setIsSendingReceipt] = useState(false);
 
   const cartTotals = useMemo(() => {
     let subtotal = 0;
@@ -249,6 +252,229 @@ const POSCheckout = () => {
 
   const handleRemove = (productId: string) => {
     setCart((prev) => prev.filter((item) => item.product.id !== productId));
+  };
+
+  const formatCurrency = (value: number) => `K${value.toFixed(2)}`;
+
+  const chunkBuffer = (input: Uint8Array, size = 180) => {
+    const chunks: Uint8Array[] = [];
+    for (let index = 0; index < input.length; index += size) {
+      chunks.push(input.slice(index, index + size));
+    }
+    return chunks;
+  };
+
+  const buildReceipt = () => {
+    const generatedAt = new Date();
+    const dateFormatter = new Intl.DateTimeFormat("en-PG", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+
+    const lines = [
+      "Marco Aesthetics",
+      "Ela Beach Market",
+      "------------------------------",
+      `Date: ${dateFormatter.format(generatedAt)}`,
+      "Cashier: demo@marco-pos.app",
+      `Status: ${navigator.onLine ? "Recorded" : "Pending sync (offline)"}`,
+      "",
+      "Items:",
+    ];
+
+    cartTotals.cartItems.forEach((item) => {
+      const label = `${item.product.name} x${item.quantity}`;
+      const paddedLabel = label.length >= 26 ? `${label.slice(0, 25)}…` : label.padEnd(26, " ");
+      lines.push(`${paddedLabel}${formatCurrency(item.lineTotal)}`);
+    });
+
+    lines.push("------------------------------");
+    lines.push(`Subtotal: ${formatCurrency(cartTotals.subtotal)}`);
+    lines.push(`Tax (GST 10%): ${formatCurrency(cartTotals.tax)}`);
+    if (cartTotals.discountAmount > 0) {
+      lines.push(`Discount: -${formatCurrency(cartTotals.discountAmount)}`);
+    }
+    lines.push(`Total: ${formatCurrency(cartTotals.total)}`);
+    lines.push("");
+    lines.push("Payment method: Cash");
+    lines.push("Location: Ela Beach Market");
+    lines.push("");
+    lines.push("Thank you for shopping with Marco Aesthetics!");
+
+    return {
+      generatedAt,
+      lines,
+      text: lines.join("\n"),
+    };
+  };
+
+  const attemptBluetoothPrint = async (text: string) => {
+    const bluetooth = navigator.bluetooth;
+    if (!bluetooth || !window.isSecureContext) {
+      return false;
+    }
+
+    const serviceUuid: BluetoothServiceUUID = 0xffe0;
+    const characteristicUuid: BluetoothCharacteristicUUID = 0xffe1;
+    let server: BluetoothRemoteGATTServer | null = null;
+
+    try {
+      const device = await bluetooth.requestDevice({
+        acceptAllDevices: true,
+        optionalServices: [serviceUuid],
+      });
+
+      server = (await device.gatt?.connect()) ?? null;
+      if (!server) {
+        throw new Error("Could not connect to the Bluetooth printer.");
+      }
+
+      const service = await server.getPrimaryService(serviceUuid);
+      const characteristic = await service.getCharacteristic(characteristicUuid);
+      const encoder = new TextEncoder();
+      const payload = encoder.encode(`${text}\n\n`);
+
+      for (const chunk of chunkBuffer(payload)) {
+        await characteristic.writeValue(chunk);
+      }
+
+      return true;
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "NotFoundError") {
+        return false;
+      }
+      throw error;
+    } finally {
+      if (server?.connected) {
+        server.disconnect();
+      }
+    }
+  };
+
+  const escapeHtml = (value: string) =>
+    value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+
+  const openPrintPreview = (receipt: { lines: string[]; text: string }) => {
+    const preview = window.open("", "print-receipt", "width=480,height=640");
+    if (!preview) {
+      throw new Error("Allow pop-ups to open the receipt preview.");
+    }
+
+    const content = receipt.lines.map((line) => escapeHtml(line)).join("<br />");
+
+    preview.document.write(`<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Receipt</title>
+    <style>
+      body { font-family: 'Courier New', monospace; margin: 24px; }
+      h1 { font-size: 1.1rem; margin-bottom: 12px; }
+      pre { font-size: 0.9rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Marco Aesthetics Receipt</h1>
+    <pre>${content}</pre>
+  </body>
+</html>`);
+    preview.document.close();
+    preview.focus();
+    setTimeout(() => {
+      preview.print();
+    }, 300);
+  };
+
+  const handlePrintReceipt = async () => {
+    if (!cart.length) {
+      toast({
+        title: "Cart is empty",
+        description: "Add items before printing a receipt.",
+      });
+      return;
+    }
+
+    setIsPrinting(true);
+    const receipt = buildReceipt();
+
+    try {
+      if (navigator.bluetooth && window.isSecureContext) {
+        try {
+          const printed = await attemptBluetoothPrint(receipt.text);
+          if (printed) {
+            toast({
+              title: "Receipt sent",
+              description: "Bluetooth printer received the receipt.",
+            });
+            return;
+          }
+        } catch (error) {
+          console.warn("[pos] Bluetooth printing failed", error);
+          toast({
+            title: "Bluetooth print failed",
+            description:
+              error instanceof Error
+                ? error.message
+                : "Unable to send data to the printer. Opening print preview instead.",
+          });
+        }
+      }
+
+      openPrintPreview(receipt);
+      toast({
+        title: "Print preview ready",
+        description: "Use your browser's print dialog to finish printing.",
+      });
+    } catch (error) {
+      console.error("[pos] Printing failed", error);
+      toast({
+        title: "Could not print",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Printing is unavailable in this browser.",
+      });
+    } finally {
+      setIsPrinting(false);
+    }
+  };
+
+  const handleSendWhatsAppReceipt = () => {
+    if (!cart.length) {
+      toast({
+        title: "Cart is empty",
+        description: "Add items before sending a receipt.",
+      });
+      return;
+    }
+
+    setIsSendingReceipt(true);
+    const receipt = buildReceipt();
+    const message = [...receipt.lines, "", "Reply to this message if you need anything else."].join("\n");
+
+    try {
+      const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+      const popup = window.open(url, "_blank", "noopener,noreferrer");
+      if (!popup) {
+        throw new Error("Allow pop-ups to share the receipt via WhatsApp.");
+      }
+      popup.focus();
+      toast({
+        title: "WhatsApp ready",
+        description: "Review the message in WhatsApp before sending.",
+      });
+    } catch (error) {
+      console.error("[pos] WhatsApp share failed", error);
+      toast({
+        title: "Could not open WhatsApp",
+        description:
+          error instanceof Error
+            ? error.message
+            : "WhatsApp sharing is unavailable on this device.",
+      });
+    } finally {
+      setIsSendingReceipt(false);
+    }
   };
 
   const submitTransaction = async () => {
@@ -491,11 +717,25 @@ const POSCheckout = () => {
             <ArrowRight className="h-5 w-5" /> Checkout (Cash only)
           </button>
           <div className="grid gap-3 sm:grid-cols-2">
-            <button type="button" className="btn-secondary justify-center">
-              <Printer className="h-4 w-4" /> Print receipt (Bluetooth)
+            <button
+              type="button"
+              className="btn-secondary justify-center gap-2"
+              onClick={() => void handlePrintReceipt()}
+              disabled={isPrinting}
+              aria-busy={isPrinting}
+            >
+              <Printer className="h-4 w-4" />
+              {isPrinting ? "Connecting printer..." : "Print receipt (Bluetooth)"}
             </button>
-            <button type="button" className="btn-secondary justify-center">
-              <MessageCircle className="h-4 w-4" /> Send WhatsApp receipt
+            <button
+              type="button"
+              className="btn-secondary justify-center gap-2"
+              onClick={handleSendWhatsAppReceipt}
+              disabled={isSendingReceipt}
+              aria-busy={isSendingReceipt}
+            >
+              <MessageCircle className="h-4 w-4" />
+              {isSendingReceipt ? "Preparing message..." : "Send WhatsApp receipt"}
             </button>
           </div>
           <p className="text-center text-xs text-muted-foreground">
